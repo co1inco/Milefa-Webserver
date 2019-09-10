@@ -25,6 +25,9 @@ namespace Milefa_Webserver.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Skill>>> GetSkills()
         {
+            if (GetUserAccsessLevel() < AccsessLevel.Normal)
+                return StatusCode(403);
+
             return await _context.Skills.ToListAsync();
         }
 
@@ -32,6 +35,9 @@ namespace Milefa_Webserver.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Skill>> GetSkill(int id)
         {
+            if (GetUserAccsessLevel() < AccsessLevel.Normal)
+                return StatusCode(403);
+
             var skill = await _context.Skills.FindAsync(id);
 
             if (skill == null)
@@ -46,6 +52,9 @@ namespace Milefa_Webserver.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSkill(int id, Skill skill)
         {
+            if (GetUserAccsessLevel() < AccsessLevel.Admin)
+                return StatusCode(403);
+
             if (id != skill.ID)
             {
                 return BadRequest();
@@ -76,6 +85,9 @@ namespace Milefa_Webserver.Controllers
         [HttpPost]
         public async Task<ActionResult<Skill>> PostSkill(Skill skill)
         {
+            if (GetUserAccsessLevel() < AccsessLevel.Admin)
+                return StatusCode(403);
+
             _context.Skills.Add(skill);
             await _context.SaveChangesAsync();
 
@@ -86,6 +98,9 @@ namespace Milefa_Webserver.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Skill>> DeleteSkill(int id)
         {
+            if (GetUserAccsessLevel() < AccsessLevel.Admin)
+                return StatusCode(403);
+
             var skill = await _context.Skills.FindAsync(id);
             if (skill == null)
             {
@@ -93,6 +108,7 @@ namespace Milefa_Webserver.Controllers
             }
 
             _context.Skills.Remove(skill);
+            DeleteSkillLinks(skill);
             await _context.SaveChangesAsync();
 
             return skill;
@@ -101,6 +117,25 @@ namespace Milefa_Webserver.Controllers
         private bool SkillExists(int id)
         {
             return _context.Skills.Any(e => e.ID == id);
+        }
+        //TODO: Bether autentification (asp.net Accsess controll)?
+        /// <summary>
+        /// Get the user accsess Level from query
+        /// </summary>
+        /// <returns></returns>
+        private AccsessLevel GetUserAccsessLevel()
+        {
+            string user = Request.Query["user"];
+            string password = Request.Query["password"];
+
+            if (user == "Colin" && password == "q")
+                return AccsessLevel.Sysadmin;
+            if (user == "User" && password == "x")
+                return AccsessLevel.Normal;
+            if (user == "x" && password == "x")
+                return AccsessLevel.Normal;
+
+            return AccsessLevel.None;
         }
     }
 }
