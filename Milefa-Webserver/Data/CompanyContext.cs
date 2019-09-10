@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
-using Milefa_Webserver.Models;
+using Milefa_WebServer.Models;
+using Milefa_WebServer.Entities;
 
-namespace Milefa_Webserver.Data
+namespace Milefa_WebServer.Data
 {
     public class CompanyContext : DbContext
     {
@@ -36,6 +37,8 @@ namespace Milefa_Webserver.Data
             modelBuilder.Entity<StudentSkill>()
                 .HasKey(c => new { c.StudentID, c.SkillID });
         }
+        
+        public DbSet<Milefa_WebServer.Entities.User> User { get; set; }
 
     }
 }

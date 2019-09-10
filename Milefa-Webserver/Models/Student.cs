@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 
-namespace Milefa_Webserver.Models
+namespace Milefa_WebServer.Models
 {
     public enum Gender
     {

@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Milefa_Webserver.Data;
-using Milefa_Webserver.Models;
+using Milefa_WebServer.Data;
+using Milefa_WebServer.Models;
 
-namespace Milefa_Webserver.Controllers
+namespace Milefa_WebServer.Controllers
 {
     enum AccsessLevel
     {
