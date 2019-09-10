@@ -206,6 +206,7 @@ namespace Milefa_Webserver.Controllers
             }
 
             _context.Students.Remove(student);
+            ModifySkills(student, new List<Skill>());
             await _context.SaveChangesAsync();
 
             return student;
@@ -228,8 +229,12 @@ namespace Milefa_Webserver.Controllers
                     if (s.DateValide.Date == date)
                     {
                         del.Add(s);
+                        ModifySkills(s, new List<Skill>());
                     }
                 });
+
+            _context.Students.RemoveRange(del);
+            await _context.SaveChangesAsync();
 
             return del.ToArray();
         }
