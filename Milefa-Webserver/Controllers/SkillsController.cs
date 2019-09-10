@@ -118,6 +118,13 @@ namespace Milefa_Webserver.Controllers
         {
             return _context.Skills.Any(e => e.ID == id);
         }
+
+        private void DeleteSkillLinks(Skill skill)
+        {
+            var toDelete = _context.StudentSkills.Where(f => f.SkillID == skill.ID);
+            _context.StudentSkills.RemoveRange(toDelete);
+        }
+
         //TODO: Bether autentification (asp.net Accsess controll)?
         /// <summary>
         /// Get the user accsess Level from query
