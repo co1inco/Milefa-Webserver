@@ -151,7 +151,9 @@ namespace Milefa_WebServer.Controllers
         /// <returns></returns>
         [Authorize(Roles = Role.HumanResource)]
         [HttpPost]
-        public async Task<ActionResult<Student>> PostStudent(Student student)
+        public async Task<ActionResult<Student>> PostStudent([Bind(
+            "Name,School,_Class,Gender,DateValide,PersNr,Breakfast,Lunch,DeployedDepID,Choise1ID,Choise2ID,Skills"
+            )] Student student)
         {
 
             if (StudentExists(student))
@@ -160,24 +162,16 @@ namespace Milefa_WebServer.Controllers
             }
 
             var skills = student.Skills;
-
-            student.Skills = null; // Skills has to be null to avoid IDENTITY_INSERT Error
-            student.ID = 0;
-
             student.DateValide = student.DateValide.Date;
 
-            _context.Students.Add(student);
+            // Not copying to another object results in EF6 trying to Identity_Insert (copying does not copy ID) 
+            var newStudent = new Student(student);
+            _context.Students.Add(newStudent);
+            ModifySkills(newStudent, skills);
             await _context.SaveChangesAsync();
 
-            if (skills != null)
-            {
-                //after SaveChanges() to get new Student id
-                ModifySkills(student, skills);
-                await _context.SaveChangesAsync();
-                student.Skills = skills;
-            }
-
-            return CreatedAtAction("GetStudent", new { id = student.ID }, student);
+            newStudent.Skills = skills;
+            return CreatedAtAction("GetStudent", new { id = newStudent.ID }, newStudent);
         }
 
 
@@ -235,7 +229,7 @@ namespace Milefa_WebServer.Controllers
         }
 
         /// <summary>
-        /// Check if the student allready exists by PersNr and DateValide
+        /// Check if the student already exists by PersNr and DateValide
         /// </summary>
         /// <param name="student"></param>
         /// <returns></returns>
