@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Linq;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Milefa_WebServer.Services;
 using Milefa_WebServer.Entities;
@@ -31,12 +32,23 @@ namespace WebApi.Controllers
             return Ok(user);
         }
 
-        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = Role.AccessAdmin)]
         [HttpGet]
         public IActionResult GetAll()
         {
             var users = _userService.GetAll();
             return Ok(users);
+        }
+
+        [HttpGet("claims")]
+        public object Claims()
+        {
+            return User.Claims.Select(c =>
+                new
+                {
+                    Type = c.Type,
+                    Value = c.Value
+                });
         }
 
         [HttpGet("{id}")]
@@ -58,5 +70,6 @@ namespace WebApi.Controllers
 
             return Ok(user);
         }
+
     }
 }

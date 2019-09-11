@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Razor.Language.CodeGeneration;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Milefa_WebServer.Entities;
@@ -21,10 +22,16 @@ namespace Milefa_WebServer.Services
 
     public class UserService : IUserService
     {
-        private List<User> _users = new List<User>
+        private readonly List<User> _users = new List<User>
         {
-            new User {ID = 1, Name = "Colin", Username = "Colin", Password = "q", Role = Role.Admin},
-            new User {ID = 2, Name = "User", Username = "User", Password = "user", Role = Role.User},
+            new User {ID = 1, Name = "Colin", Username = "Colin", Password = "q", Roles = new List<string>
+            {
+                Role.Sysadmin,
+                Role.Admin,
+                Role.User,
+                Role.HumanResource
+            }},
+            new User {ID = 2, Name = "User", Username = "User", Password = "user", Roles = new List<string> {Role.User}},
         };
 
         private readonly AppSettings _appSettings;
@@ -40,16 +47,21 @@ namespace Milefa_WebServer.Services
 
             if (user == null)
                 return null;
-
+            
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.ID.ToString()),
+            };
+            foreach (string userRole in user.Roles)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, userRole));
+            }
+            
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Name, user.ID.ToString()),
-                    new Claim(ClaimTypes.Role, user.Role),
-                }),
+                Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddDays(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
                     SecurityAlgorithms.HmacSha256Signature)

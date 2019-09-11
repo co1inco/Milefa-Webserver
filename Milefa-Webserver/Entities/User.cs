@@ -1,4 +1,7 @@
-﻿namespace Milefa_WebServer.Entities
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace Milefa_WebServer.Entities
 {
     public class User
     {
@@ -11,7 +14,8 @@
         //public string PasswordHashed { get; set; }
 
         //Store role in database?
-        public string Role { get; set; }
+        [NotMapped]
+        public List<string> Roles { get; set; }
 
         public string Token { get; set; }
     }
