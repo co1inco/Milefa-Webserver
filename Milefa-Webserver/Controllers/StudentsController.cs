@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Milefa_WebServer.Data;
+using Milefa_WebServer.Entities;
 using Milefa_WebServer.Models;
 
 namespace Milefa_WebServer.Controllers
@@ -18,6 +21,7 @@ namespace Milefa_WebServer.Controllers
         Sysadmin= 3
     }
 
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class StudentsController : ControllerBase
@@ -35,10 +39,6 @@ namespace Milefa_WebServer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
-            var al = GetUserAccsessLevel();
-            if (al < AccsessLevel.Normal)
-                return StatusCode(403);
-
             var students = await _context.Students
                 .Include(i => i.DeployedDep)
                     .ThenInclude(i => i.RequiredSkills)
@@ -49,6 +49,7 @@ namespace Milefa_WebServer.Controllers
                 .Include(i => i.Skills)
                 .ToListAsync();
 
+            var currentUserId = int.Parse(User.Identity.Name);
             foreach (Student s in students) {
 
                 if (s.Skills != null)
@@ -56,7 +57,7 @@ namespace Milefa_WebServer.Controllers
                     s.Skills = GetSkills(s.ID);
                 }
 
-                if (al < AccsessLevel.Admin)
+                if (!User.IsInRole(Role.Admin))
                 {
                     s.Name = null;
                     s.School = null;
@@ -73,11 +74,6 @@ namespace Milefa_WebServer.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Student>> GetStudent(int id)
         {
-            var al = GetUserAccsessLevel();
-
-            if (al < AccsessLevel.Normal)
-                return StatusCode(403);
-
             var student = await _context.Students
                 .Include(i => i.DeployedDep)
                     .ThenInclude(i => i.RequiredSkills)
@@ -98,7 +94,7 @@ namespace Milefa_WebServer.Controllers
                 student.Skills = GetSkills(student.ID);
             }
 
-            if (al < AccsessLevel.Admin)
+            if (!User.IsInRole(Role.Admin))
             {
                 student.Name = null;
                 student.School = null;
@@ -115,12 +111,10 @@ namespace Milefa_WebServer.Controllers
         /// <param name="id"></param>
         /// <param name="student"></param>
         /// <returns></returns>
+        [Authorize(Roles = Role.HumanResource)]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStudent(int id, Student student)
         {
-            if (GetUserAccsessLevel() < AccsessLevel.Normal)
-                StatusCode(403);
-
             if (id != student.ID)
             {
                 return BadRequest();
@@ -155,14 +149,10 @@ namespace Milefa_WebServer.Controllers
         /// </summary>
         /// <param name="student"></param>
         /// <returns></returns>
+        [Authorize(Roles = Role.HumanResource)]
         [HttpPost]
         public async Task<ActionResult<Student>> PostStudent(Student student)
         {
-            //Autenticate
-            if (GetUserAccsessLevel() < AccsessLevel.Normal)
-            {
-                return StatusCode(403);
-            }
 
             if (StudentExists(student))
             {
@@ -170,7 +160,9 @@ namespace Milefa_WebServer.Controllers
             }
 
             var skills = student.Skills;
+
             student.Skills = null; // Skills has to be null to avoid IDENTITY_INSERT Error
+            student.ID = 0;
 
             student.DateValide = student.DateValide.Date;
 
@@ -190,15 +182,10 @@ namespace Milefa_WebServer.Controllers
 
 
         // DELETE: api/Students/5
+        [Authorize(Roles = Role.HumanResource)]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Student>> DeleteStudent(int id)
         {
-            //Autenticate
-            if (GetUserAccsessLevel() < AccsessLevel.Normal)
-            {
-                return StatusCode(403);
-            }
-
             var student = await _context.Students.FindAsync(id);
             if (student == null)
             {
@@ -212,15 +199,10 @@ namespace Milefa_WebServer.Controllers
             return student;
         }
 
+        [Authorize(Roles = Role.Admin)]
         [HttpDelete("all/{date}")]
         public async Task<ActionResult<Student[]>> DeleteAllStudents(DateTime date)
         {
-            //Autenticate
-            if (GetUserAccsessLevel() < AccsessLevel.Admin)
-            {
-                return StatusCode(403);
-            }
-
             date = date.Date;
 
             var del = new List<Student>();
@@ -261,26 +243,6 @@ namespace Milefa_WebServer.Controllers
         {
             return _context.Students.Any(e => (e.PersNr == student.PersNr && e.DateValide == student.DateValide));
         }
-
-        /// <summary>
-        /// Get the user accsess Level from query
-        /// </summary>
-        /// <returns></returns>
-        private AccsessLevel GetUserAccsessLevel()
-        {
-            string user = Request.Query["user"];
-            string password = Request.Query["password"];
-
-            if (user == "Colin" && password == "q")
-                return AccsessLevel.Sysadmin;
-            if (user == "User" && password == "x")
-                return AccsessLevel.Normal;
-            if (user == "x" && password == "x")
-                return AccsessLevel.Normal;
-
-            return AccsessLevel.None;
-        }
-
 
         private Skill[] GetSkills(int studentID)
         {
