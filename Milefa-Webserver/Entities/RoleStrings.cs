@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Milefa_WebServer.Entities
 {
 
-    public static class Role
+    public static class RoleStrings
     {
         public const string Sysadmin = "Sysadmin";
         public const string Admin = "Admin";

@@ -57,7 +57,7 @@ namespace Milefa_WebServer.Controllers
                     s.Skills = GetSkills(s.ID);
                 }
 
-                if (!User.IsInRole(Role.Admin))
+                if (!User.IsInRole(RoleStrings.Admin))
                 {
                     s.Name = null;
                     s.School = null;
@@ -94,7 +94,7 @@ namespace Milefa_WebServer.Controllers
                 student.Skills = GetSkills(student.ID);
             }
 
-            if (!User.IsInRole(Role.Admin))
+            if (!User.IsInRole(RoleStrings.Admin))
             {
                 student.Name = null;
                 student.School = null;
@@ -111,7 +111,7 @@ namespace Milefa_WebServer.Controllers
         /// <param name="id"></param>
         /// <param name="student"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.HumanResource)]
+        [Authorize(Roles = RoleStrings.HumanResource)]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStudent(int id, Student student)
         {
@@ -149,7 +149,7 @@ namespace Milefa_WebServer.Controllers
         /// </summary>
         /// <param name="student"></param>
         /// <returns></returns>
-        [Authorize(Roles = Role.HumanResource)]
+        [Authorize(Roles = RoleStrings.HumanResource)]
         [HttpPost]
         public async Task<ActionResult<Student>> PostStudent([Bind(
             "Name,School,_Class,Gender,DateValide,PersNr,Breakfast,Lunch,DeployedDepID,Choise1ID,Choise2ID,Skills"
@@ -176,7 +176,7 @@ namespace Milefa_WebServer.Controllers
 
 
         // DELETE: api/Students/5
-        [Authorize(Roles = Role.HumanResource)]
+        [Authorize(Roles = RoleStrings.HumanResource)]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Student>> DeleteStudent(int id)
         {
@@ -193,7 +193,7 @@ namespace Milefa_WebServer.Controllers
             return student;
         }
 
-        [Authorize(Roles = Role.Admin)]
+        [Authorize(Roles = RoleStrings.Admin)]
         [HttpDelete("all/{date}")]
         public async Task<ActionResult<Student[]>> DeleteAllStudents(DateTime date)
         {

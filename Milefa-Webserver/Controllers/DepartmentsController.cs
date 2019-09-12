@@ -2,31 +2,36 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Milefa_WebServer.Data;
+using Milefa_WebServer.Entities;
 using Milefa_WebServer.Models;
+using Milefa_WebServer.Services;
 
 namespace Milefa_WebServer.Controllers
 {
+
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class DepartmentsController : ControllerBase
     {
         private readonly CompanyContext _context;
+        private IUserService _userService;
 
-        public DepartmentsController(CompanyContext context)
+        public DepartmentsController(CompanyContext context, IUserService userService)
         {
             _context = context;
+            _userService = userService;
         }
 
         // GET: api/Departments
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Department>>> GetDepartments()
         {
-            if (GetUserAccsessLevel() < AccsessLevel.Normal)
-                return StatusCode(403);
 
             var departments = await _context.Departments
                 .Include(i => i.RequiredSkills)
@@ -47,9 +52,6 @@ namespace Milefa_WebServer.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Department>> GetDepartment(int id)
         {
-            if (GetUserAccsessLevel() < AccsessLevel.Normal)
-                StatusCode(403);
-
             var department = await _context.Departments
                 .Include(i => i.RequiredSkills)
                 .FirstOrDefaultAsync(s => s.ID == id);
@@ -68,11 +70,10 @@ namespace Milefa_WebServer.Controllers
         }
 
         // PUT: api/Departments/5
+        [Authorize(Roles = RoleStrings.Admin)]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDepartment(int id, Department department)
         {
-            if (GetUserAccsessLevel() < AccsessLevel.Admin)
-                return StatusCode(403);
 
             if (id != department.ID)
             {
@@ -106,11 +107,10 @@ namespace Milefa_WebServer.Controllers
         /// </summary>
         /// <param name="department"></param>
         /// <returns></returns>
+        [Authorize(Roles = RoleStrings.Admin)]
         [HttpPost]
         public async Task<ActionResult<Department>> PostDepartment(Department department)
         {
-            if (GetUserAccsessLevel() < AccsessLevel.Admin)
-                return StatusCode(403);
 
             var skills = department.RequiredSkills;
             department.RequiredSkills = null;
@@ -126,11 +126,10 @@ namespace Milefa_WebServer.Controllers
         }
 
         // DELETE: api/Departments/5
+        [Authorize(Roles = RoleStrings.Admin)]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Department>> DeleteDepartment(int id)
         {
-            if (GetUserAccsessLevel() < AccsessLevel.Admin)
-                return StatusCode(403);
 
             var department = await _context.Departments.FindAsync(id);
             if (department == null)
@@ -148,26 +147,6 @@ namespace Milefa_WebServer.Controllers
         private bool DepartmentExists(int id)
         {
             return _context.Departments.Any(e => e.ID == id);
-        }
-
-        //TODO: Bether autentification (asp.net Accsess controll)?
-        /// <summary>
-        /// Get the user accsess Level from query
-        /// </summary>
-        /// <returns></returns>
-        private AccsessLevel GetUserAccsessLevel()
-        {
-            string user = Request.Query["user"];
-            string password = Request.Query["password"];
-
-            if (user == "Colin" && password == "q")
-                return AccsessLevel.Sysadmin;
-            if (user == "User" && password == "x")
-                return AccsessLevel.Normal;
-            if (user == "x" && password == "x")
-                return AccsessLevel.Normal;
-
-            return AccsessLevel.None;
         }
 
 

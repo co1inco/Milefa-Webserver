@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Milefa_WebServer.Services;
 using Milefa_WebServer.Entities;
+using Milefa_WebServer.Models;
 
 // https://jasonwatmore.com/post/2019/01/08/aspnet-core-22-role-based-authorization-tutorial-with-example-api
 
@@ -32,7 +33,7 @@ namespace WebApi.Controllers
             return Ok(user);
         }
 
-        [Authorize(Roles = Role.AccessAdmin)]
+        [Authorize(Roles = RoleStrings.AccessAdmin)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -63,7 +64,7 @@ namespace WebApi.Controllers
 
             // only allow admins to access other user records
             var currentUserId = int.Parse(User.Identity.Name);
-            if (id != currentUserId && !User.IsInRole(Role.Admin))
+            if (id != currentUserId && !User.IsInRole(RoleStrings.Admin))
             {
                 return Forbid();
             }

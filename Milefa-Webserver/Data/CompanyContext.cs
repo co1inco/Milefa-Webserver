@@ -1,22 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 using Milefa_WebServer.Models;
-using Milefa_WebServer.Entities;
 
 namespace Milefa_WebServer.Data
 {
     public class CompanyContext : DbContext
     {
-        public CompanyContext(DbContextOptions<CompanyContext> options) : base (options)
-        {
-        }
-        
+        public CompanyContext(DbContextOptions<CompanyContext> options) : base (options) { }
+
+//        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+//        {
+//            optionsBuilder.UseSqlServer("Data Source=test.db");
+//        }
+
         public DbSet<Student> Students { get; set; }
         public DbSet<Department> Departments { get; set; }
         public DbSet<Skill> Skills { get; set; }
+        public DbSet<User> User { get; set; }
 
         // Link table for m:n relations
         public DbSet<RequiredSkill> RequiredSkills { get; set; }
@@ -27,9 +29,10 @@ namespace Milefa_WebServer.Data
             modelBuilder.Entity<Student>().ToTable("Student");
             modelBuilder.Entity<Department>().ToTable("Department");
             modelBuilder.Entity<Skill>().ToTable("Skill");
+            modelBuilder.Entity<User>().ToTable("User");
 
             //TODO: Change Tablename
-            modelBuilder.Entity<RequiredSkill>().ToTable("RequredSkillAssignment");
+            modelBuilder.Entity<RequiredSkill>().ToTable("RequiredSkills");
             modelBuilder.Entity<StudentSkill>().ToTable("StudentSkill");
 
             modelBuilder.Entity<RequiredSkill>()
@@ -38,7 +41,6 @@ namespace Milefa_WebServer.Data
                 .HasKey(c => new { c.StudentID, c.SkillID });
         }
         
-        public DbSet<Milefa_WebServer.Entities.User> User { get; set; }
 
     }
 }
