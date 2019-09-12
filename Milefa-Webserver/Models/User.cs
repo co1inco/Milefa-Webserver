@@ -13,6 +13,7 @@ namespace Milefa_WebServer.Models
         public byte[] PasswordSalt { get; set; }
 
         //Store role in database?
+        [NotMapped]
         public ICollection<Role> Roles { get; set; }
 
         [NotMapped]

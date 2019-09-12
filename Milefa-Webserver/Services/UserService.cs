@@ -14,7 +14,6 @@ using Milefa_WebServer.Data;
 using Milefa_WebServer.Entities;
 using Milefa_WebServer.Helpers;
 using Milefa_WebServer.Models;
-using WebApi.Helpers;
 
 // Part of user authentication
 namespace Milefa_WebServer.Services
@@ -54,32 +53,6 @@ namespace Milefa_WebServer.Services
             if (VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 return null;
 
-
-            /*
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, user.ID.ToString()),
-            };
-            foreach (string userRole in user.Roles)
-            {
-                claims.Add(new Claim(ClaimTypes.RoleStrings, userRole));
-            }
-            
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.UtcNow.AddDays(2),
-                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key),
-                    SecurityAlgorithms.HmacSha256Signature)
-            };
-            var token = tokenHandler.CreateToken(tokenDescriptor);
-            user.Token = tokenHandler.WriteToken(token);
-
-            // Remove data not suposed to be send back
-            user.Password = null;
-            */
             return user;
         }
 
@@ -110,7 +83,8 @@ namespace Milefa_WebServer.Services
             user.PasswordSalt = passwordSalt;
 
             _context.User.Add(user);
-
+            _context.SaveChangesAsync();
+            
             return user;
         }
 
