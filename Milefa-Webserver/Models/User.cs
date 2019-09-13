@@ -7,16 +7,19 @@ namespace Milefa_WebServer.Models
     {
         public int ID { get; set; }
         public string Username { get; set; }
-        public string Password { get; set; }
 
         public byte[] PasswordHash { get; set; }
         public byte[] PasswordSalt { get; set; }
 
         //Store role in database?
         [NotMapped]
-        public ICollection<Role> Roles { get; set; }
+        public List<Role> Roles { get; set; }
 
         [NotMapped]
         public string Token { get; set; }
+
+        //TODO: Find a bether name
+        // If the User is Teacher, Student, Traine, ... (for the rating)
+        public string Type { get; set; }
     }
 }

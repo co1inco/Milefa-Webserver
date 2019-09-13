@@ -7,9 +7,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Milefa_Webserver.Entities;
 using Milefa_WebServer.Data;
 using Milefa_WebServer.Entities;
+using Milefa_WebServer.Helpers;
 using Milefa_WebServer.Models;
+using Milefa_WebServer.Services;
 
 namespace Milefa_WebServer.Controllers
 {
@@ -26,12 +30,19 @@ namespace Milefa_WebServer.Controllers
     [ApiController]
     public class StudentsController : ControllerBase
     {
-        //TODO: Use ASP.NET Autentication Logic (Replace GetUserAccsessLevel)
-
+        
+        private readonly AppSettings _appSettings;
         private readonly CompanyContext _context;
+        private IUserService _userService;
 
-        public StudentsController(CompanyContext context)
+        public StudentsController(
+            CompanyContext context,
+            IUserService user,
+            IOptions<AppSettings> appSettings
+            )
         {
+            _userService = user;
+            _appSettings = appSettings.Value;
             _context = context;
         }
 
@@ -167,8 +178,14 @@ namespace Milefa_WebServer.Controllers
             // Not copying to another object results in EF6 trying to Identity_Insert (copying does not copy ID) 
             var newStudent = new Student(student);
             _context.Students.Add(newStudent);
+
             ModifySkills(newStudent, skills);
             await _context.SaveChangesAsync();
+
+
+            var newUser = new User { Username = GenerateStudentUsername(student), Type = Usertypes.Student };
+            _userService.Create(newUser, _appSettings.NewUserPass);
+
 
             newStudent.Skills = skills;
             return CreatedAtAction("GetStudent", new { id = newStudent.ID }, newStudent);
@@ -190,6 +207,8 @@ namespace Milefa_WebServer.Controllers
             ModifySkills(student, new List<Skill>());
             await _context.SaveChangesAsync();
 
+            _userService.Delete(GenerateStudentUsername(student));
+
             return student;
         }
 
@@ -206,6 +225,7 @@ namespace Milefa_WebServer.Controllers
                     {
                         del.Add(s);
                         ModifySkills(s, new List<Skill>());
+                        _userService.Delete(GenerateStudentUsername(s));
                     }
                 });
 
@@ -281,6 +301,14 @@ namespace Milefa_WebServer.Controllers
             }
 
             _context.StudentSkills.RemoveRange(linkedSkills);
+        }
+
+        private string GenerateStudentUsername(Student student)
+        {
+            return student.DateValide.Year.ToString()
+                + student.DateValide.Month.ToString()
+                + student.DateValide.Day.ToString()
+                + student.PersNr.ToString();
         }
     }
 }

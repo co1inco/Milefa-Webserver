@@ -26,6 +26,7 @@ namespace Milefa_WebServer.Services
         User Create(User user, string password);
         void Update(User user, string password = null);
         void Delete(int id);
+        void Delete(string username);
     }
 
     public class UserService : IUserService
@@ -51,9 +52,9 @@ namespace Milefa_WebServer.Services
                 return null;
 
             if (VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
-                return null;
+                return user;
 
-            return user;
+            return null;
         }
 
         public IEnumerable<User> GetAll()
@@ -119,6 +120,15 @@ namespace Milefa_WebServer.Services
         public void Delete(int id)
         {
             var user = _context.User.Find(id);
+            if (user != null)
+            {
+                _context.User.Remove(user);
+                _context.SaveChanges();
+            }
+        }
+        public void Delete(string username)
+        {
+            var user = _context.User.First(x => x.Username == username);
             if (user != null)
             {
                 _context.User.Remove(user);

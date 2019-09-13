@@ -19,6 +19,7 @@ namespace Milefa_WebServer.Data
         public DbSet<Department> Departments { get; set; }
         public DbSet<Skill> Skills { get; set; }
         public DbSet<User> User { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
         // Link table for m:n relations
         public DbSet<RequiredSkill> RequiredSkills { get; set; }
@@ -30,6 +31,7 @@ namespace Milefa_WebServer.Data
             modelBuilder.Entity<Department>().ToTable("Department");
             modelBuilder.Entity<Skill>().ToTable("Skill");
             modelBuilder.Entity<User>().ToTable("User");
+            modelBuilder.Entity<Role>().ToTable("Role");
 
             //TODO: Change Tablename
             modelBuilder.Entity<RequiredSkill>().ToTable("RequiredSkills");

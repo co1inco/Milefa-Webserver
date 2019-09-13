@@ -61,5 +61,9 @@ namespace Milefa_WebServer.Models
         public Department Choise2 { get; set; }
         public ICollection<Skill> Skills { get; set; }
 
+        /*
+        public int? UserID { get; set; }
+        public User User { get; set; }
+        */
     }
 }

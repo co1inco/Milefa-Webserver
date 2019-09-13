@@ -19,6 +19,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.IdentityModel.Tokens;
 using Milefa_WebServer.Helpers;
 using Milefa_WebServer.Services;
+using Milefa_Webserver.Services;
 
 namespace Milefa_WebServer
 {
@@ -93,6 +94,7 @@ namespace Milefa_WebServer
 
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IRolesService, RoleService> ();
 
         }
 
