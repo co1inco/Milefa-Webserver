@@ -2,6 +2,7 @@
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
+using Milefa_Webserver.Models;
 using Milefa_WebServer.Models;
 
 namespace Milefa_WebServer.Data
@@ -20,6 +21,7 @@ namespace Milefa_WebServer.Data
         public DbSet<Skill> Skills { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<Rating> Rating { get; set; }
 
         // Link table for m:n relations
         public DbSet<RequiredSkill> RequiredSkills { get; set; }
@@ -32,6 +34,7 @@ namespace Milefa_WebServer.Data
             modelBuilder.Entity<Skill>().ToTable("Skill");
             modelBuilder.Entity<User>().ToTable("User");
             modelBuilder.Entity<Role>().ToTable("Role");
+            modelBuilder.Entity<Rating>().ToTable("Rating");
 
             //TODO: Change Tablename
             modelBuilder.Entity<RequiredSkill>().ToTable("RequiredSkills");
@@ -41,6 +44,9 @@ namespace Milefa_WebServer.Data
                 .HasKey(c => new { c.SkillID, c.DepartmentID });
             modelBuilder.Entity<StudentSkill>()
                 .HasKey(c => new { c.StudentID, c.SkillID });
+
+            modelBuilder.Entity<Rating>()
+                .HasKey(c => new { c.studentID, c.UserID });
         }
         
 
