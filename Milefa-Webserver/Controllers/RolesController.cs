@@ -9,6 +9,8 @@ using Milefa_WebServer.Data;
 using Milefa_WebServer.Models;
 using Microsoft.AspNetCore.Authorization;
 using Milefa_WebServer.Entities;
+using Milefa_Webserver.Services;
+using Remotion.Linq.Clauses;
 
 namespace Milefa_Webserver.Controllers
 {
@@ -18,39 +20,43 @@ namespace Milefa_Webserver.Controllers
     public class RolesController : ControllerBase
     {
         private readonly CompanyContext _context;
+        private readonly IRolesService _rolesService;
 
-        public RolesController(CompanyContext context)
+        public RolesController(
+            CompanyContext context,
+            IRolesService rolesService
+            )
         {
             _context = context;
+            _rolesService = rolesService;
         }
 
         // GET: api/Roles/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Role[]>> GetRole(int id)
+        public async Task<ActionResult<IEnumerable<Role>>> GetRole(int id)
         {
-            var role = _context.Roles.Where(x => x.UserID == id).AsEnumerable<Role>();
+            //var role =  await (from r in _context.Roles where r.UserID == id select r).ToListAsync();
+            var role = _rolesService.GetUserRoles(id);
 
             if (role == null)
             {
                 return NotFound();
             }
 
-            return role.ToArray();
+            return role;
         }
 
 
         // POST: api/Roles
         [Authorize(Roles = RoleStrings.Admin)]
         [HttpPost]
-        public async Task<ActionResult<Role>> PostRole(Role role)
+        public async Task<ActionResult<IEnumerable<Role>>> PostRole(Role role)
         {
             if (_context.Roles.Any(x => x.RoleName == role.RoleName && x.UserID == role.UserID))
                 return BadRequest();
+            _rolesService.AddUserRoles(role.UserID, role.RoleName);
 
-            _context.Roles.Add(role);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetRole", new { id = role.ID }, role);
+            return _rolesService.GetUserRoles(role.UserID);
         }
 
 

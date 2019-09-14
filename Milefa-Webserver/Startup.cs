@@ -95,6 +95,7 @@ namespace Milefa_WebServer
             // configure DI for application services
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IRolesService, RoleService> ();
+            services.AddScoped<IRatingService, RatingService>();
 
         }
 

@@ -17,5 +17,8 @@ namespace Milefa_WebServer.Entities
         public const string AccessSysadmin = Sysadmin;
         public const string AccessAdmin = AccessSysadmin + "," + Admin;
         public const string AccessUser = AccessAdmin + "," + User;
+
+
+        public static string[] AvailableRoles = new string[] {RoleStrings.HumanResource, RoleStrings.User};
     }
 }

@@ -9,6 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Milefa_WebServer.Data;
 using Milefa_WebServer.Entities;
 using Milefa_WebServer.Models;
+using Milefa_Webserver.Services;
 
 namespace Milefa_WebServer.Controllers
 {
@@ -18,10 +19,15 @@ namespace Milefa_WebServer.Controllers
     public class SkillsController : ControllerBase
     {
         private readonly CompanyContext _context;
+        private readonly IRatingService _ratingService;
 
-        public SkillsController(CompanyContext context)
+        public SkillsController(
+            CompanyContext context,
+            IRatingService ratingService
+            )
         {
             _context = context;
+            _ratingService = ratingService;
         }
 
         // GET: api/Skills
@@ -117,6 +123,7 @@ namespace Milefa_WebServer.Controllers
             _context.StudentSkills.RemoveRange(toDeleteStudents);
             var toDeleteDepartments = _context.RequiredSkills.Where(f => f.SkillID == skill.ID);
             _context.RequiredSkills.RemoveRange(toDeleteDepartments);
+            _ratingService.RemoveRatingSkills(skill);
         }
 
     }

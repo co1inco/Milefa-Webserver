@@ -13,6 +13,7 @@ using Milefa_WebServer.Data;
 using Milefa_WebServer.Entities;
 using Milefa_WebServer.Helpers;
 using Milefa_WebServer.Models;
+using Milefa_Webserver.Services;
 using Milefa_WebServer.Services;
 
 namespace Milefa_WebServer.Controllers
@@ -33,17 +34,20 @@ namespace Milefa_WebServer.Controllers
         
         private readonly AppSettings _appSettings;
         private readonly CompanyContext _context;
-        private IUserService _userService;
+        private readonly IUserService _userService;
+        private readonly IRatingService _ratingService;
 
         public StudentsController(
             CompanyContext context,
             IUserService user,
-            IOptions<AppSettings> appSettings
+            IOptions<AppSettings> appSettings,
+            IRatingService ratingService
             )
         {
             _userService = user;
             _appSettings = appSettings.Value;
             _context = context;
+            _ratingService = ratingService;
         }
 
         // GET: api/Students
@@ -205,6 +209,7 @@ namespace Milefa_WebServer.Controllers
 
             _context.Students.Remove(student);
             ModifySkills(student, new List<Skill>());
+            _ratingService.RemoveRating(student);
             await _context.SaveChangesAsync();
 
             _userService.Delete(GenerateStudentUsername(student));
@@ -226,6 +231,7 @@ namespace Milefa_WebServer.Controllers
                         del.Add(s);
                         ModifySkills(s, new List<Skill>());
                         _userService.Delete(GenerateStudentUsername(s));
+                        _ratingService.RemoveRating(s);
                     }
                 });
 

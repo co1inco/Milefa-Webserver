@@ -27,24 +27,27 @@ namespace WebApi.Controllers
     [Route("[controller]")]
     public class UsersController : ControllerBase
     {
-        private IUserService _userService;
-        private IRolesService _roleService;
-        private IMapper _mapper;
+        private readonly IUserService _userService;
+        private readonly IRolesService _roleService;
+        private readonly IMapper _mapper;
         private readonly AppSettings _appSettings;
         private readonly CompanyContext _context;
+        private readonly IRatingService _ratingService;
 
         public UsersController(
             IUserService userService,
             IRolesService roleService,
             IMapper mapper,
             IOptions<AppSettings> appSettings,
-            CompanyContext context)
+            CompanyContext context,
+            IRatingService ratingService)
         {
             _userService = userService;
             _roleService = roleService;
             _mapper = mapper;
             _appSettings = appSettings.Value;
             _context = context;
+            _ratingService = ratingService;
         }
 
         [AllowAnonymous]
@@ -56,7 +59,8 @@ namespace WebApi.Controllers
             if (user == null)
                 return BadRequest(new { message = "Username or password is incorrect" });
 
-            var hasRoles = _context.Roles.Where(x => x.UserID == user.ID);
+            //var hasRoles = _context.Roles.Where(x => x.UserID == user.ID);
+            var hasRoles = _roleService.GetUserRoles(user.ID);
               //  new List<string>
               //  {RoleStrings.Sysadmin, RoleStrings.User, RoleStrings.Admin, RoleStrings.HumanResource};
 
@@ -121,6 +125,12 @@ namespace WebApi.Controllers
         public IActionResult GetAll()
         {
             var users = _userService.GetAll();
+
+            foreach (User user in users)
+            {
+                user.Roles = _roleService.GetUserRoles(user.ID);
+            }
+
             return Ok(users);
         }
 
@@ -156,5 +166,7 @@ namespace WebApi.Controllers
 
             return Ok(user);
         }
+
+        // remove user => remove ratings
     }
 }

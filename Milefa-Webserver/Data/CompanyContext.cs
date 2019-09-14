@@ -22,6 +22,7 @@ namespace Milefa_WebServer.Data
         public DbSet<User> User { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<Rating> Rating { get; set; }
+        public DbSet<RatingAssignment> RatingAssignments { get; set; }
 
         // Link table for m:n relations
         public DbSet<RequiredSkill> RequiredSkills { get; set; }
@@ -35,6 +36,7 @@ namespace Milefa_WebServer.Data
             modelBuilder.Entity<User>().ToTable("User");
             modelBuilder.Entity<Role>().ToTable("Role");
             modelBuilder.Entity<Rating>().ToTable("Rating");
+            modelBuilder.Entity<RatingAssignment>().ToTable("RatingAssignment");
 
             //TODO: Change Tablename
             modelBuilder.Entity<RequiredSkill>().ToTable("RequiredSkills");
@@ -45,8 +47,10 @@ namespace Milefa_WebServer.Data
             modelBuilder.Entity<StudentSkill>()
                 .HasKey(c => new { c.StudentID, c.SkillID });
 
-            modelBuilder.Entity<Rating>()
-                .HasKey(c => new { c.studentID, c.UserID });
+//            modelBuilder.Entity<Rating>()
+//                .HasKey(c => new {c.ID});
+            modelBuilder.Entity<RatingAssignment>()
+                .HasKey(c => new {c.RatingID, c.SkillID });
         }
         
 
