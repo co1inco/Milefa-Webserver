@@ -18,13 +18,6 @@ using Milefa_WebServer.Services;
 
 namespace Milefa_WebServer.Controllers
 {
-    enum AccsessLevel
-    {
-        None    = 0,
-        Normal  = 1,
-        Admin   = 2,
-        Sysadmin= 3
-    }
 
     [Authorize]
     [Route("api/[controller]")]
@@ -188,7 +181,7 @@ namespace Milefa_WebServer.Controllers
 
 
             var newUser = new User { Username = GenerateStudentUsername(student), Type = Usertypes.Student };
-            _userService.Create(newUser, _appSettings.NewUserPass);
+            _userService.CreateOrReset(newUser, _appSettings.NewUserPass);
 
 
             newStudent.Skills = skills;
@@ -201,19 +194,12 @@ namespace Milefa_WebServer.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Student>> DeleteStudent(int id)
         {
-            var student = await _context.Students.FindAsync(id);
+            var student = await _context.Students.AsNoTracking().FirstOrDefaultAsync(i => i.ID == id);
             if (student == null)
             {
                 return NotFound();
             }
-
-            _context.Students.Remove(student);
-            ModifySkills(student, new List<Skill>());
-            _ratingService.RemoveRating(student);
-            await _context.SaveChangesAsync();
-
-            _userService.Delete(GenerateStudentUsername(student));
-
+            RemoveStudent(student);
             return student;
         }
 
@@ -223,20 +209,11 @@ namespace Milefa_WebServer.Controllers
         {
             date = date.Date;
 
-            var del = new List<Student>();
-            await _context.Students.ForEachAsync(s =>
-                {
-                    if (s.DateValide.Date == date)
-                    {
-                        del.Add(s);
-                        ModifySkills(s, new List<Skill>());
-                        _userService.Delete(GenerateStudentUsername(s));
-                        _ratingService.RemoveRating(s);
-                    }
-                });
-
-            _context.Students.RemoveRange(del);
-            await _context.SaveChangesAsync();
+            var del = await (from s in _context.Students where s.DateValide == date select s).AsNoTracking().ToListAsync();
+            foreach (Student student in del)
+            {
+                RemoveStudent(student);
+            }
 
             return del.ToArray();
         }
@@ -285,7 +262,7 @@ namespace Milefa_WebServer.Controllers
             if (skills == null)
                 return;
 
-            var linkedSkills = _context.StudentSkills.Where(i => i.StudentID == student.ID).ToList();
+            var linkedSkills = _context.StudentSkills.AsNoTracking().Where(i => i.StudentID == student.ID).ToList();
 
             foreach (Skill skill in skills)
             {
@@ -315,6 +292,25 @@ namespace Milefa_WebServer.Controllers
                 + student.DateValide.Month.ToString()
                 + student.DateValide.Day.ToString()
                 + student.PersNr.ToString();
+        }
+
+        private void RemoveStudent(Student student)
+        {
+            _userService.Delete(GenerateStudentUsername(student));
+            _context.SaveChanges();
+
+            ModifySkills(student, new List<Skill>());
+            _context.SaveChanges();
+
+ //           _ratingService.RemoveRating(student);
+ //           _context.SaveChanges();
+
+            var delStudent = _context.Students.AsNoTracking().FirstOrDefault(i => i.ID == student.ID);
+            if (delStudent != null)
+            {
+                _context.Students.Remove(delStudent);
+            }
+            _context.SaveChanges();
         }
     }
 }

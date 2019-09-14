@@ -1,7 +1,9 @@
 ﻿
 
 
+using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.EntityFrameworkCore;
 using Milefa_WebServer.Data;
@@ -22,16 +24,16 @@ namespace Milefa_Webserver.Services
 
     public class RatingService : IRatingService
     {
-        private CompanyContext _context;
+        private readonly CompanyContext _context;
 
         public RatingService(CompanyContext context)
         {
             _context = context;
         }
 
-        public async void RemoveRating(Student student)
+        public void RemoveRating(Student student)
         {
-            var rating = await _context.Rating.FirstOrDefaultAsync(i => i.studentID == student.ID);
+            var rating = _context.Rating.AsNoTracking().FirstOrDefault(i => i.studentID == student.ID);
 
             if (rating == null)
             {
@@ -40,11 +42,12 @@ namespace Milefa_Webserver.Services
 
             RemoveRatingSkills(rating);
             _context.Rating.Remove(rating);
+            _context.SaveChanges();
 
         }
-        public async void RemoveRating(User user)
+        public  void RemoveRating(User user)
         {
-            var rating = await _context.Rating.FirstOrDefaultAsync(i => i.UserID == user.ID);
+            var rating = _context.Rating.AsNoTracking().FirstOrDefault(i => i.UserID == user.ID);
 
             if (rating == null)
             {
@@ -52,6 +55,8 @@ namespace Milefa_Webserver.Services
             }
             RemoveRatingSkills(rating);
             _context.Rating.Remove(rating);
+            _context.SaveChanges();
+
         }
 
         public void RemoveRating(Rating rating)
@@ -62,17 +67,19 @@ namespace Milefa_Webserver.Services
             }
             RemoveRatingSkills(rating);
             _context.Rating.Remove(rating);
+            _context.SaveChanges();
+
         }
 
-        public async void RemoveRatingSkills(Rating rating)
+        public void RemoveRatingSkills(Rating rating)
         {
-            var r = await (from s in _context.RatingAssignments where s.RatingID == rating.ID select s).ToListAsync();
+            var r = (from s in _context.RatingAssignments where s.RatingID == rating.ID select s).AsNoTracking().ToList();
             _context.RatingAssignments.RemoveRange(r);
         }
 
-        public async void RemoveRatingSkills(Skill skill)
+        public void RemoveRatingSkills(Skill skill)
         {
-            var r = await (from s in _context.RatingAssignments where s.SkillID == skill.ID select s).ToListAsync();
+            var r = (from s in _context.RatingAssignments where s.SkillID == skill.ID select s).AsNoTracking().ToList();
             _context.RatingAssignments.RemoveRange(r);
         }
     }

@@ -19,7 +19,7 @@ namespace Milefa_Webserver.Services
 
     public class RoleService : IRolesService
     {
-        private CompanyContext _context;
+        private readonly CompanyContext _context;
 
         public RoleService(CompanyContext context)
         {
@@ -42,16 +42,16 @@ namespace Milefa_Webserver.Services
             }
         }
 
-        public async void RemoveUserRole(int id)
+        public void RemoveUserRole(int id)
         {
-            var role = await _context.Roles.FindAsync(id);
+            var role = _context.Roles.Find(id);
             if (role == null)
             {
                 return;
             }
 
             _context.Roles.Remove(role);
-            await _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
     }
 }

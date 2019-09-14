@@ -14,6 +14,7 @@ using Milefa_WebServer.Data;
 using Milefa_WebServer.Entities;
 using Milefa_WebServer.Helpers;
 using Milefa_WebServer.Models;
+using Milefa_Webserver.Services;
 
 // Part of user authentication
 namespace Milefa_WebServer.Services
@@ -24,6 +25,7 @@ namespace Milefa_WebServer.Services
         IEnumerable<User> GetAll();
         User GetById(int id);
         User Create(User user, string password);
+        User CreateOrReset(User user, string password);
         void Update(User user, string password = null);
         void Delete(int id);
         void Delete(string username);
@@ -34,11 +36,13 @@ namespace Milefa_WebServer.Services
 
         private CompanyContext _context;
         private readonly AppSettings _appSettings;
+        private readonly IRatingService _ratingService;
 
-        public UserService(CompanyContext context, IOptions<AppSettings> appSettings)
+        public UserService(CompanyContext context, IOptions<AppSettings> appSettings, IRatingService ratingService)
         {
             _context = context;
             _appSettings = appSettings.Value;
+            _ratingService = ratingService;
         }
 
         public User Authenticate(string username, string password)
@@ -77,15 +81,41 @@ namespace Milefa_WebServer.Services
                 throw new AppException($"Username \"{user.Username}\" is already taken");
             }
 
-            byte[] passworHash, passwordSalt;
-            CreatePasswordHash(password, out passworHash, out passwordSalt);
+            CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
 
-            user.PasswordHash = passworHash;
+            user.PasswordHash = passwordHash;
             user.PasswordSalt = passwordSalt;
 
             _context.User.Add(user);
-            _context.SaveChangesAsync();
-            
+            _context.SaveChanges();
+            return user;
+        }
+
+        public User CreateOrReset(User user, string password)
+        {
+            if (string.IsNullOrWhiteSpace(password))
+                throw new AppException("Password is Required");
+
+            CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
+
+            user.PasswordHash = passwordHash;
+            user.PasswordSalt = passwordSalt;
+
+            var existingUser = _context.User.FirstOrDefault(i => i.Username == user.Username);
+
+            if (existingUser != null)
+            {
+                existingUser.PasswordHash = user.PasswordHash;
+                existingUser.PasswordSalt = user.PasswordSalt;
+                existingUser.Type = user.Type;
+                _context.User.Update(user);
+            }
+            else
+            {
+                _context.User.Add(user);
+            }
+            _context.SaveChanges();
+
             return user;
         }
 
@@ -106,8 +136,7 @@ namespace Milefa_WebServer.Services
 
             if (!string.IsNullOrWhiteSpace(password))
             {
-                byte[] passwordHash, passwordSalt;
-                CreatePasswordHash(password, out passwordHash, out passwordSalt);
+                CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
 
                 user.PasswordHash = passwordHash;
                 user.PasswordSalt = passwordSalt;
@@ -119,18 +148,20 @@ namespace Milefa_WebServer.Services
 
         public void Delete(int id)
         {
-            var user = _context.User.Find(id);
+            var user = _context.User.AsNoTracking().FirstOrDefault(i => i.ID == id);
             if (user != null)
             {
+                _ratingService.RemoveRating(user);
                 _context.User.Remove(user);
                 _context.SaveChanges();
             }
         }
         public void Delete(string username)
         {
-            var user = _context.User.First(x => x.Username == username);
+            var user = _context.User.AsNoTracking().FirstOrDefault(x => x.Username == username);
             if (user != null)
             {
+                _ratingService.RemoveRating(user);
                 _context.User.Remove(user);
                 _context.SaveChanges();
             }
