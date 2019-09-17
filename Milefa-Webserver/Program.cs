@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.DependencyInjection;
-using Milefa_Webserver.Data;
-using Milefa_Webserver.Models;
+using Milefa_WebServer.Data;
+using Milefa_WebServer.Models;
 
-namespace Milefa_Webserver
+namespace Milefa_WebServer
 {
     public class Program
     {

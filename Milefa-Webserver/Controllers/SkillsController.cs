@@ -2,32 +2,38 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Milefa_Webserver.Data;
-using Milefa_Webserver.Models;
+using Milefa_WebServer.Data;
+using Milefa_WebServer.Entities;
+using Milefa_WebServer.Models;
+using Milefa_Webserver.Services;
 
-namespace Milefa_Webserver.Controllers
+namespace Milefa_WebServer.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SkillsController : ControllerBase
     {
         private readonly CompanyContext _context;
+        private readonly IRatingService _ratingService;
 
-        public SkillsController(CompanyContext context)
+        public SkillsController(
+            CompanyContext context,
+            IRatingService ratingService
+            )
         {
             _context = context;
+            _ratingService = ratingService;
         }
 
         // GET: api/Skills
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Skill>>> GetSkills()
         {
-            if (GetUserAccsessLevel() < AccsessLevel.Normal)
-                return StatusCode(403);
-
             return await _context.Skills.ToListAsync();
         }
 
@@ -35,9 +41,6 @@ namespace Milefa_Webserver.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Skill>> GetSkill(int id)
         {
-            if (GetUserAccsessLevel() < AccsessLevel.Normal)
-                return StatusCode(403);
-
             var skill = await _context.Skills.FindAsync(id);
 
             if (skill == null)
@@ -49,12 +52,10 @@ namespace Milefa_Webserver.Controllers
         }
 
         // PUT: api/Skills/5
+        [Authorize(Roles = RoleStrings.Admin)]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutSkill(int id, Skill skill)
         {
-            if (GetUserAccsessLevel() < AccsessLevel.Admin)
-                return StatusCode(403);
-
             if (id != skill.ID)
             {
                 return BadRequest();
@@ -82,11 +83,10 @@ namespace Milefa_Webserver.Controllers
         }
 
         // POST: api/Skills
+        [Authorize(Roles = RoleStrings.Admin)]
         [HttpPost]
         public async Task<ActionResult<Skill>> PostSkill(Skill skill)
         {
-            if (GetUserAccsessLevel() < AccsessLevel.Admin)
-                return StatusCode(403);
 
             _context.Skills.Add(skill);
             await _context.SaveChangesAsync();
@@ -95,12 +95,10 @@ namespace Milefa_Webserver.Controllers
         }
 
         // DELETE: api/Skills/5
+        [Authorize(Roles = RoleStrings.Admin)]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Skill>> DeleteSkill(int id)
         {
-            if (GetUserAccsessLevel() < AccsessLevel.Admin)
-                return StatusCode(403);
-
             var skill = await _context.Skills.FindAsync(id);
             if (skill == null)
             {
@@ -125,26 +123,8 @@ namespace Milefa_Webserver.Controllers
             _context.StudentSkills.RemoveRange(toDeleteStudents);
             var toDeleteDepartments = _context.RequiredSkills.Where(f => f.SkillID == skill.ID);
             _context.RequiredSkills.RemoveRange(toDeleteDepartments);
+            _ratingService.RemoveRatingSkills(skill);
         }
 
-        //TODO: Bether autentification (asp.net Accsess controll)?
-        /// <summary>
-        /// Get the user accsess Level from query
-        /// </summary>
-        /// <returns></returns>
-        private AccsessLevel GetUserAccsessLevel()
-        {
-            string user = Request.Query["user"];
-            string password = Request.Query["password"];
-
-            if (user == "Colin" && password == "q")
-                return AccsessLevel.Sysadmin;
-            if (user == "User" && password == "x")
-                return AccsessLevel.Normal;
-            if (user == "x" && password == "x")
-                return AccsessLevel.Normal;
-
-            return AccsessLevel.None;
-        }
     }
 }

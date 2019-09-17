@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace Milefa_Webserver.Migrations
+namespace Milefa_WebServer.Migrations
 {
     public partial class School : Migration
     {

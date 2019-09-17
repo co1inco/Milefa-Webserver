@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 
-namespace Milefa_Webserver.Controllers
+namespace Milefa_WebServer.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]

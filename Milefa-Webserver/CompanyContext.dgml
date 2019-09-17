@@ -1,0 +1,182 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<DirectedGraph GraphDirection="LeftToRight" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
+  <Nodes>
+<Node Id="IModel" Label="CompanyContext" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot" PropertyAccessMode="PropertyAccessMode.Default" ProductVersion="2.2.6-servicing-10079" Annotations="Relational:MaxIdentifierLength: 128
+SqlServer:ValueGenerationStrategy: IdentityColumn" Category="Model" Group="Expanded" />
+<Node Id = "User" Label="User" Name="User" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.Internal.DirectConstructorBinding
+Relational:TableName: User" Category="EntityType" Group="Expanded" />
+<Node Id = "Department" Label="Department" Name="Department" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.Internal.DirectConstructorBinding
+Relational:TableName: Department" Category="EntityType" Group="Expanded" />
+<Node Id = "User.ID" Label="ID" Name="ID" Category="Property Primary" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+SqlServer:ValueGenerationStrategy: IdentityColumn" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "User.Name" Label="Name" Name="Name" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "User.Password" Label="Password" Name="Password" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "User.Token" Label="Token" Name="Token" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "User.Username" Label="Username" Name="Username" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "RequiredSkill" Label="RequiredSkill" Name="RequiredSkill" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.Internal.DirectConstructorBinding
+Relational:TableName: RequredSkillAssignment" Category="EntityType" Group="Expanded" />
+<Node Id = "Department.ID" Label="ID" Name="ID" Category="Property Primary" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+SqlServer:ValueGenerationStrategy: IdentityColumn" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "Department.RequiredSkills" Label="RequiredSkills (*)" Name="RequiredSkills" Category="Navigation Collection" Type="ICollection&lt;Skill&gt;"  Field="&lt;RequiredSkills&gt;k__BackingField" Dependent="Skill" Principal="" Inverse="" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "Department.MaxEmployes" Label="MaxEmployes" Name="MaxEmployes" Category="Property Required" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Department.Name" Label="Name" Name="Name" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Skill" Label="Skill" Name="Skill" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.Internal.DirectConstructorBinding
+Relational:TableName: Skill" Category="EntityType" Group="Expanded" />
+<Node Id = "RequiredSkill.SkillID" Label="SkillID" Name="SkillID" Category="Property Primary" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="True" IsForeignKey="True" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "RequiredSkill.Department" Label="Department (1)" Name="Department" Category="Navigation Property" Type="Department"  Field="&lt;Department&gt;k__BackingField" Dependent="" Principal="Department" Inverse="" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "RequiredSkill.Skill" Label="Skill (1)" Name="Skill" Category="Navigation Property" Type="Skill"  Field="&lt;Skill&gt;k__BackingField" Dependent="" Principal="Skill" Inverse="" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "RequiredSkill.DepartmentID" Label="DepartmentID" Name="DepartmentID" Category="Property Primary" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="True" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Student" Label="Student" Name="Student" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.Internal.DirectConstructorBinding
+Relational:TableName: Student" Category="EntityType" Group="Expanded" />
+<Node Id = "Skill.ID" Label="ID" Name="ID" Category="Property Primary" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+SqlServer:ValueGenerationStrategy: IdentityColumn" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "Skill.DepartmentID" Label="DepartmentID" Name="DepartmentID" Category="Property Foreign" Type="Nullable&lt;int&gt;" MaxLength="None" Field="nofield" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="False" IsIndexed="True" IsShadow="True" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Skill.Name" Label="Name" Name="Name" Category="Property Optional" Type="string" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Skill.StudentID" Label="StudentID" Name="StudentID" Category="Property Foreign" Type="Nullable&lt;int&gt;" MaxLength="None" Field="nofield" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="False" IsIndexed="True" IsShadow="True" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "StudentSkill" Label="StudentSkill" Name="StudentSkill" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="ConstructorBinding: Microsoft.EntityFrameworkCore.Metadata.Internal.DirectConstructorBinding
+Relational:TableName: StudentSkill" Category="EntityType" Group="Expanded" />
+<Node Id = "Student.ID" Label="ID" Name="ID" Category="Property Primary" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping
+SqlServer:ValueGenerationStrategy: IdentityColumn" IsPrimaryKey="True" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="ValueGenerated.OnAdd" />
+<Node Id = "Student.Choise1" Label="Choise1 (1)" Name="Choise1" Category="Navigation Property" Type="Department"  Field="&lt;Choise1&gt;k__BackingField" Dependent="" Principal="Department" Inverse="" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "Student.Choise2" Label="Choise2 (1)" Name="Choise2" Category="Navigation Property" Type="Department"  Field="&lt;Choise2&gt;k__BackingField" Dependent="" Principal="Department" Inverse="" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "Student.DeployedDep" Label="DeployedDep (1)" Name="DeployedDep" Category="Navigation Property" Type="Department"  Field="&lt;DeployedDep&gt;k__BackingField" Dependent="" Principal="Department" Inverse="" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "Student.Skills" Label="Skills (*)" Name="Skills" Category="Navigation Collection" Type="ICollection&lt;Skill&gt;"  Field="&lt;Skills&gt;k__BackingField" Dependent="Skill" Principal="" Inverse="" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "Student.Breakfast" Label="Breakfast" Name="Breakfast" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Student.Choise1ID" Label="Choise1ID" Name="Choise1ID" Category="Property Foreign" Type="Nullable&lt;int&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="False" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Student.Choise2ID" Label="Choise2ID" Name="Choise2ID" Category="Property Foreign" Type="Nullable&lt;int&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="False" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Student.DateValide" Label="DateValide" Name="DateValide" Category="Property Required" Type="DateTime" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerDateTimeTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Student.DeployedDepID" Label="DeployedDepID" Name="DeployedDepID" Category="Property Foreign" Type="Nullable&lt;int&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="True" IsRequired="False" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Student.Gender" Label="Gender" Name="Gender" Category="Property Optional" Type="Nullable&lt;Gender&gt;" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Student.Lunch" Label="Lunch" Name="Lunch" Category="Property Required" Type="bool" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.BoolTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Student.Name" Label="Name" Name="Name" Category="Property Optional" Type="string" MaxLength="50" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50
+Relational:TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Student.PersNr" Label="PersNr" Name="PersNr" Category="Property Required" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Student.School" Label="School" Name="School" Category="Property Optional" Type="string" MaxLength="50" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50
+Relational:TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "Student._Class" Label="_Class" Name="_Class" Category="Property Optional" Type="string" MaxLength="50" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="MaxLength: 50
+Relational:TypeMapping: Microsoft.EntityFrameworkCore.SqlServer.Storage.Internal.SqlServerStringTypeMapping" IsPrimaryKey="False" IsForeignKey="False" IsRequired="False" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "StudentSkill" Label="StudentSkill" Name="StudentSkill" BaseClass="" IsAbstract="False" ChangeTrackingStrategy="ChangeTrackingStrategy.Snapshot"  Annotations="" Category="EntityType" Group="Expanded" />
+<Node Id = "StudentSkill.StudentID" Label="StudentID" Name="StudentID" Category="Property Primary" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="True" IsForeignKey="True" IsRequired="True" IsIndexed="False" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+<Node Id = "StudentSkill.Skill" Label="Skill (1)" Name="Skill" Category="Navigation Property" Type="Skill"  Field="&lt;Skill&gt;k__BackingField" Dependent="" Principal="Skill" Inverse="" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "StudentSkill.Student" Label="Student (1)" Name="Student" Category="Navigation Property" Type="Student"  Field="&lt;Student&gt;k__BackingField" Dependent="" Principal="Student" Inverse="" PropertyAccessMode="PropertyAccessMode.Default" />
+<Node Id = "StudentSkill.SkillID" Label="SkillID" Name="SkillID" Category="Property Primary" Type="int" MaxLength="None" Field="" PropertyAccessMode="PropertyAccessMode.Default" BeforeSaveBehavior="PropertySaveBehavior.Save" AfterSaveBehavior="PropertySaveBehavior.Save" Annotations="Relational:TypeMapping: Microsoft.EntityFrameworkCore.Storage.IntTypeMapping" IsPrimaryKey="True" IsForeignKey="True" IsRequired="True" IsIndexed="True" IsShadow="False" IsAlternateKey="False" IsConcurrencyToken="False" IsUnicode="True" ValueGenerated="None" />
+  </Nodes>
+  <Links>
+<Link Source = "IModel" Target="User" Category="Contains" />
+<Link Source = "IModel" Target="Department" Category="Contains" />
+<Link Source = "User" Target="User.ID" Category="Contains" />
+<Link Source = "User" Target="User.Name" Category="Contains" />
+<Link Source = "User" Target="User.Password" Category="Contains" />
+<Link Source = "User" Target="User.Token" Category="Contains" />
+<Link Source = "User" Target="User.Username" Category="Contains" />
+<Link Source = "IModel" Target="RequiredSkill" Category="Contains" />
+<Link Source = "Department" Target="Department.RequiredSkills" Category="Contains" />
+<Link Source = "Department" Target="Department.ID" Category="Contains" />
+<Link Source = "Department" Target="Department.MaxEmployes" Category="Contains" />
+<Link Source = "Department" Target="Department.Name" Category="Contains" />
+<Link Source = "IModel" Target="Skill" Category="Contains" />
+<Link Source = "RequiredSkill" Target="RequiredSkill.Department" Category="Contains" />
+<Link Source = "RequiredSkill" Target="RequiredSkill.Skill" Category="Contains" />
+<Link Source = "RequiredSkill" Target="RequiredSkill.SkillID" Category="Contains" />
+<Link Source="RequiredSkill" Target="Department" From="RequiredSkill.DepartmentID" To="Department.ID" Name="RequiredSkill -> Department" Annotations="" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source="RequiredSkill" Target="Skill" From="RequiredSkill.SkillID" To="Skill.ID" Name="RequiredSkill -> Skill" Annotations="" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "RequiredSkill" Target="RequiredSkill.DepartmentID" Category="Contains" />
+<Link Source = "IModel" Target="Student" Category="Contains" />
+<Link Source = "Skill" Target="Skill.ID" Category="Contains" />
+<Link Source="Skill" Target="Department" From="Skill.DepartmentID" To="Department.ID" Name="Skill -> Department" Annotations="" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source="Skill" Target="Student" From="Skill.StudentID" To="Student.ID" Name="Skill -> Student" Annotations="" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "Skill" Target="Skill.DepartmentID" Category="Contains" />
+<Link Source = "Skill" Target="Skill.Name" Category="Contains" />
+<Link Source = "Skill" Target="Skill.StudentID" Category="Contains" />
+<Link Source = "IModel" Target="StudentSkill" Category="Contains" />
+<Link Source = "Student" Target="Student.Choise1" Category="Contains" />
+<Link Source = "Student" Target="Student.Choise2" Category="Contains" />
+<Link Source = "Student" Target="Student.DeployedDep" Category="Contains" />
+<Link Source = "Student" Target="Student.Skills" Category="Contains" />
+<Link Source = "Student" Target="Student.ID" Category="Contains" />
+<Link Source="Student" Target="Department" From="Student.Choise1ID" To="Department.ID" Name="Student -> Department" Annotations="" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source="Student" Target="Department" From="Student.Choise2ID" To="Department.ID" Name="Student -> Department" Annotations="" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source="Student" Target="Department" From="Student.DeployedDepID" To="Department.ID" Name="Student -> Department" Annotations="" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "Student" Target="Student.Breakfast" Category="Contains" />
+<Link Source = "Student" Target="Student.Choise1ID" Category="Contains" />
+<Link Source = "Student" Target="Student.Choise2ID" Category="Contains" />
+<Link Source = "Student" Target="Student.DateValide" Category="Contains" />
+<Link Source = "Student" Target="Student.DeployedDepID" Category="Contains" />
+<Link Source = "Student" Target="Student.Gender" Category="Contains" />
+<Link Source = "Student" Target="Student.Lunch" Category="Contains" />
+<Link Source = "Student" Target="Student.Name" Category="Contains" />
+<Link Source = "Student" Target="Student.PersNr" Category="Contains" />
+<Link Source = "Student" Target="Student.School" Category="Contains" />
+<Link Source = "Student" Target="Student._Class" Category="Contains" />
+<Link Source = "IModel" Target="StudentSkill" Category="Contains" />
+<Link Source = "StudentSkill" Target="StudentSkill.Skill" Category="Contains" />
+<Link Source = "StudentSkill" Target="StudentSkill.Student" Category="Contains" />
+<Link Source = "StudentSkill" Target="StudentSkill.StudentID" Category="Contains" />
+<Link Source="StudentSkill" Target="Skill" From="StudentSkill.SkillID" To="Skill.ID" Name="StudentSkill -> Skill" Annotations="" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source="StudentSkill" Target="Student" From="StudentSkill.StudentID" To="Student.ID" Name="StudentSkill -> Student" Annotations="" IsUnique="False" Label="1:*" Category="Foreign Key" />
+<Link Source = "StudentSkill" Target="StudentSkill.SkillID" Category="Contains" />
+  </Links>
+  <Styles>
+    <Style TargetType="Node" GroupLabel="EntityType" ValueLabel="True">
+      <Condition Expression="HasCategory('EntityType')" />
+      <Setter Property="Background" Value="#FFC0C0C0" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Primary" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Primary')" />
+      <Setter Property="Background" Value="#FF008000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Optional" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Optional')" />
+      <Setter Property="Background" Value="#FF808040" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Foreign" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Foreign')" />
+      <Setter Property="Background" Value="#FF8080FF" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Property Required" ValueLabel="True">
+      <Condition Expression="HasCategory('Property Required')" />
+      <Setter Property="Background" Value="#FFC0A000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Navigation Property" ValueLabel="True">
+      <Condition Expression="HasCategory('Navigation Property')" />
+      <Setter Property="Background" Value="#FF990000" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Navigation Collection" ValueLabel="True">
+      <Condition Expression="HasCategory('Navigation Collection')" />
+      <Setter Property="Background" Value="#FFFF3232" />
+    </Style>
+    <Style TargetType="Node" GroupLabel="Model" ValueLabel="True">
+      <Condition Expression="HasCategory('Model')" />
+      <Setter Property="Background" Value="#FFFFFFFF" />
+    </Style>
+  </Styles>
+  <Properties>
+    <Property Id="Name" Group="Model Properties" DataType="System.String" />
+    <Property Id="Field"  Description="Backing field" Group="Model Properties" DataType="System.String" />
+    <Property Id="Type"  Description="CLR data type" Group="Model Properties" DataType="System.String" />
+    <Property Id="To" Description="Source property" Group="Model Properties" DataType="System.String" />
+    <Property Id="From" Description="Target property" Group="Model Properties" DataType="System.String" />
+    <Property Id="Dependent" Description="Dependent entity" Group="Model Properties" DataType="System.String" />
+    <Property Id="Inverse" Description="Inverse entity" Group="Model Properties" DataType="System.String" />
+    <Property Id="Principal" Description="Principal entity" Group="Model Properties" DataType="System.String" />    
+    <Property Id="Annotations" Description="Annotations" Group="Model Properties" DataType="System.String" />
+    <Property Id="BaseClass"  Description="Base class" Group="Model Properties" DataType="System.String" />
+    <Property Id="ChangeTrackingStrategy" Description="Change tracking strategy" Group="Model Properties" DataType="System.String" />
+    <Property Id="IsUnique" Group="Model Properties" DataType="System.Boolean" />
+    <Property Id="IsAbstract" Group="Model Properties" DataType="System.Boolean" />
+    <Property Id="ProductVersion" Label="Product Version" Description="EF Core product version" Group="Model Properties" DataType="System.String" />
+    <Property Id="IsIndexed" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsRequired" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsPrimaryKey" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsForeignKey" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsShadow" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsAlternateKey" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsConcurrencyToken" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsIndexed" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="IsUnicode" Group="Property Flags" DataType="System.Boolean" />
+    <Property Id="ValueGenerated" Group="Property Flags" DataType="System.String" />
+    <Property Id="BeforeSaveBehavior" Group="Property Flags" DataType="System.String" />
+    <Property Id="AfterSaveBehavior" Group="Property Flags" DataType="System.String" />
+    <Property Id="PropertyAccessMode" Group="Property Flags" DataType="System.String" />
+  </Properties>
+</DirectedGraph>

@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using Milefa_Webserver.Data;
+using Milefa_WebServer.Data;
 
-namespace Milefa_Webserver.Migrations
+namespace Milefa_WebServer.Migrations
 {
     [DbContext(typeof(CompanyContext))]
     [Migration("20190909090047_School")]

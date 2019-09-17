@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Milefa_Webserver.Models
+namespace Milefa_WebServer.Models
 {
     /// <summary>
     /// Required skills for a department

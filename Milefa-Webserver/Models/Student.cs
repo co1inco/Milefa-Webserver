@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.Globalization;
+using System.Security.Cryptography.X509Certificates;
 
-namespace Milefa_Webserver.Models
+namespace Milefa_WebServer.Models
 {
     public enum Gender
     {
@@ -15,7 +17,23 @@ namespace Milefa_Webserver.Models
 
     public class Student
     {
-        public int ID { get; set; }
+        public Student() { }
+        public Student(Student student)
+        {
+            Name = student.Name;
+            School = student.School;
+            _Class = student._Class;
+            Gender = student.Gender;
+            DateValide = student.DateValide;
+            PersNr = student.PersNr;
+            Breakfast = student.Breakfast;
+            Lunch = student.Lunch;
+            DeployedDepID = student.DeployedDepID;
+            Choise1ID = student.Choise1ID;
+            Choise2ID = student.Choise2ID;
+        }
+
+        public int ID { get;  set; }
 
         [StringLength(50)]
         public string Name { get; set; }
@@ -43,5 +61,9 @@ namespace Milefa_Webserver.Models
         public Department Choise2 { get; set; }
         public ICollection<Skill> Skills { get; set; }
 
+        /*
+        public int? UserID { get; set; }
+        public User User { get; set; }
+        */
     }
 }

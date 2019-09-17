@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Milefa_Webserver.Data;
+using Milefa_WebServer.Data;
 
-namespace Milefa_Webserver.Models
+namespace Milefa_WebServer.Models
 {
     public class DbInitializer
     {
@@ -103,8 +103,6 @@ namespace Milefa_Webserver.Models
                 context.RequiredSkills.Add(s);
             }
             context.SaveChanges();
-
-
 
         }
     }

@@ -1,44 +1,52 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Milefa_Webserver.Data;
-using Milefa_Webserver.Models;
+using Microsoft.Extensions.Options;
+using Milefa_Webserver.Entities;
+using Milefa_WebServer.Data;
+using Milefa_WebServer.Entities;
+using Milefa_WebServer.Helpers;
+using Milefa_WebServer.Models;
+using Milefa_Webserver.Services;
+using Milefa_WebServer.Services;
 
-namespace Milefa_Webserver.Controllers
+namespace Milefa_WebServer.Controllers
 {
-    enum AccsessLevel
-    {
-        None    = 0,
-        Normal  = 1,
-        Admin   = 2,
-        Sysadmin= 3
-    }
 
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class StudentsController : ControllerBase
     {
-        //TODO: Use ASP.NET Autentication Logic (Replace GetUserAccsessLevel)
-
+        
+        private readonly AppSettings _appSettings;
         private readonly CompanyContext _context;
+        private readonly IUserService _userService;
+        private readonly IRatingService _ratingService;
 
-        public StudentsController(CompanyContext context)
+        public StudentsController(
+            CompanyContext context,
+            IUserService user,
+            IOptions<AppSettings> appSettings,
+            IRatingService ratingService
+            )
         {
+            _userService = user;
+            _appSettings = appSettings.Value;
             _context = context;
+            _ratingService = ratingService;
         }
 
         // GET: api/Students
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
-            var al = GetUserAccsessLevel();
-            if (al < AccsessLevel.Normal)
-                return StatusCode(403);
-
             var students = await _context.Students
                 .Include(i => i.DeployedDep)
                     .ThenInclude(i => i.RequiredSkills)
@@ -49,6 +57,7 @@ namespace Milefa_Webserver.Controllers
                 .Include(i => i.Skills)
                 .ToListAsync();
 
+            var currentUserId = int.Parse(User.Identity.Name);
             foreach (Student s in students) {
 
                 if (s.Skills != null)
@@ -56,7 +65,7 @@ namespace Milefa_Webserver.Controllers
                     s.Skills = GetSkills(s.ID);
                 }
 
-                if (al < AccsessLevel.Admin)
+                if (!User.IsInRole(RoleStrings.Admin))
                 {
                     s.Name = null;
                     s.School = null;
@@ -73,11 +82,6 @@ namespace Milefa_Webserver.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Student>> GetStudent(int id)
         {
-            var al = GetUserAccsessLevel();
-
-            if (al < AccsessLevel.Normal)
-                return StatusCode(403);
-
             var student = await _context.Students
                 .Include(i => i.DeployedDep)
                     .ThenInclude(i => i.RequiredSkills)
@@ -98,7 +102,7 @@ namespace Milefa_Webserver.Controllers
                 student.Skills = GetSkills(student.ID);
             }
 
-            if (al < AccsessLevel.Admin)
+            if (!User.IsInRole(RoleStrings.Admin))
             {
                 student.Name = null;
                 student.School = null;
@@ -115,12 +119,10 @@ namespace Milefa_Webserver.Controllers
         /// <param name="id"></param>
         /// <param name="student"></param>
         /// <returns></returns>
+        [Authorize(Roles = RoleStrings.HumanResource)]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStudent(int id, Student student)
         {
-            if (GetUserAccsessLevel() < AccsessLevel.Normal)
-                StatusCode(403);
-
             if (id != student.ID)
             {
                 return BadRequest();
@@ -155,14 +157,12 @@ namespace Milefa_Webserver.Controllers
         /// </summary>
         /// <param name="student"></param>
         /// <returns></returns>
+        [Authorize(Roles = RoleStrings.HumanResource)]
         [HttpPost]
-        public async Task<ActionResult<Student>> PostStudent(Student student)
+        public async Task<ActionResult<Student>> PostStudent([Bind(
+            "Name,School,_Class,Gender,DateValide,PersNr,Breakfast,Lunch,DeployedDepID,Choise1ID,Choise2ID,Skills"
+            )] Student student)
         {
-            //Autenticate
-            if (GetUserAccsessLevel() < AccsessLevel.Normal)
-            {
-                return StatusCode(403);
-            }
 
             if (StudentExists(student))
             {
@@ -170,71 +170,50 @@ namespace Milefa_Webserver.Controllers
             }
 
             var skills = student.Skills;
-            student.Skills = null; // Skills has to be null to avoid IDENTITY_INSERT Error
-
             student.DateValide = student.DateValide.Date;
 
-            _context.Students.Add(student);
+            // Not copying to another object results in EF6 trying to Identity_Insert (copying does not copy ID) 
+            var newStudent = new Student(student);
+            _context.Students.Add(newStudent);
+
+            ModifySkills(newStudent, skills);
             await _context.SaveChangesAsync();
 
-            if (skills != null)
-            {
-                //after SaveChanges() to get new Student id
-                ModifySkills(student, skills);
-                await _context.SaveChangesAsync();
-                student.Skills = skills;
-            }
 
-            return CreatedAtAction("GetStudent", new { id = student.ID }, student);
+            var newUser = new User { Username = GenerateStudentUsername(student), Type = Usertypes.Student };
+            _userService.CreateOrReset(newUser, _appSettings.NewUserPass);
+
+
+            newStudent.Skills = skills;
+            return CreatedAtAction("GetStudent", new { id = newStudent.ID }, newStudent);
         }
 
 
         // DELETE: api/Students/5
+        [Authorize(Roles = RoleStrings.HumanResource)]
         [HttpDelete("{id}")]
         public async Task<ActionResult<Student>> DeleteStudent(int id)
         {
-            //Autenticate
-            if (GetUserAccsessLevel() < AccsessLevel.Normal)
-            {
-                return StatusCode(403);
-            }
-
-            var student = await _context.Students.FindAsync(id);
+            var student = await _context.Students.AsNoTracking().FirstOrDefaultAsync(i => i.ID == id);
             if (student == null)
             {
                 return NotFound();
             }
-
-            _context.Students.Remove(student);
-            ModifySkills(student, new List<Skill>());
-            await _context.SaveChangesAsync();
-
+            RemoveStudent(student);
             return student;
         }
 
+        [Authorize(Roles = RoleStrings.Admin)]
         [HttpDelete("all/{date}")]
         public async Task<ActionResult<Student[]>> DeleteAllStudents(DateTime date)
         {
-            //Autenticate
-            if (GetUserAccsessLevel() < AccsessLevel.Admin)
-            {
-                return StatusCode(403);
-            }
-
             date = date.Date;
 
-            var del = new List<Student>();
-            await _context.Students.ForEachAsync(s =>
-                {
-                    if (s.DateValide.Date == date)
-                    {
-                        del.Add(s);
-                        ModifySkills(s, new List<Skill>());
-                    }
-                });
-
-            _context.Students.RemoveRange(del);
-            await _context.SaveChangesAsync();
+            var del = await (from s in _context.Students where s.DateValide == date select s).AsNoTracking().ToListAsync();
+            foreach (Student student in del)
+            {
+                RemoveStudent(student);
+            }
 
             return del.ToArray();
         }
@@ -243,7 +222,7 @@ namespace Milefa_Webserver.Controllers
         // --- Utility ---
 
         /// <summary>
-        /// Check if the studentID already exists in the database
+        /// Check if the StudentID already exists in the database
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -253,7 +232,7 @@ namespace Milefa_Webserver.Controllers
         }
 
         /// <summary>
-        /// Check if the student allready exists by PersNr and DateValide
+        /// Check if the student already exists by PersNr and DateValide
         /// </summary>
         /// <param name="student"></param>
         /// <returns></returns>
@@ -261,26 +240,6 @@ namespace Milefa_Webserver.Controllers
         {
             return _context.Students.Any(e => (e.PersNr == student.PersNr && e.DateValide == student.DateValide));
         }
-
-        /// <summary>
-        /// Get the user accsess Level from query
-        /// </summary>
-        /// <returns></returns>
-        private AccsessLevel GetUserAccsessLevel()
-        {
-            string user = Request.Query["user"];
-            string password = Request.Query["password"];
-
-            if (user == "Colin" && password == "q")
-                return AccsessLevel.Sysadmin;
-            if (user == "User" && password == "x")
-                return AccsessLevel.Normal;
-            if (user == "x" && password == "x")
-                return AccsessLevel.Normal;
-
-            return AccsessLevel.None;
-        }
-
 
         private Skill[] GetSkills(int studentID)
         {
@@ -303,7 +262,7 @@ namespace Milefa_Webserver.Controllers
             if (skills == null)
                 return;
 
-            var linkedSkills = _context.StudentSkills.Where(i => i.StudentID == student.ID).ToList();
+            var linkedSkills = _context.StudentSkills.AsNoTracking().Where(i => i.StudentID == student.ID).ToList();
 
             foreach (Skill skill in skills)
             {
@@ -325,6 +284,33 @@ namespace Milefa_Webserver.Controllers
             }
 
             _context.StudentSkills.RemoveRange(linkedSkills);
+        }
+
+        private string GenerateStudentUsername(Student student)
+        {
+            return student.DateValide.Year.ToString()
+                + student.DateValide.Month.ToString()
+                + student.DateValide.Day.ToString()
+                + student.PersNr.ToString();
+        }
+
+        private void RemoveStudent(Student student)
+        {
+            _userService.Delete(GenerateStudentUsername(student));
+            _context.SaveChanges();
+
+            ModifySkills(student, new List<Skill>());
+            _context.SaveChanges();
+
+ //           _ratingService.RemoveRating(student);
+ //           _context.SaveChanges();
+
+            var delStudent = _context.Students.AsNoTracking().FirstOrDefault(i => i.ID == student.ID);
+            if (delStudent != null)
+            {
+                _context.Students.Remove(delStudent);
+            }
+            _context.SaveChanges();
         }
     }
 }
