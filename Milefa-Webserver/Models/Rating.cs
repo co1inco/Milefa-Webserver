@@ -11,7 +11,7 @@ namespace Milefa_Webserver.Models
     public class Rating
     {
         public int ID { get; set; }
-        public int studentID { get; set; }
+        public int StudentID { get; set; }
         public Student Student { get; set; }
 
         public int UserID { get; set; }

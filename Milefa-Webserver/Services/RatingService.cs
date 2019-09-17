@@ -33,7 +33,7 @@ namespace Milefa_Webserver.Services
 
         public void RemoveRating(Student student)
         {
-            var rating = _context.Rating.AsNoTracking().FirstOrDefault(i => i.studentID == student.ID);
+            var rating = _context.Rating.AsNoTracking().FirstOrDefault(i => i.StudentID == student.ID);
 
             if (rating == null)
             {

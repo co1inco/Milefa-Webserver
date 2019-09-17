@@ -222,7 +222,7 @@ namespace Milefa_WebServer.Controllers
         // --- Utility ---
 
         /// <summary>
-        /// Check if the studentID already exists in the database
+        /// Check if the StudentID already exists in the database
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
