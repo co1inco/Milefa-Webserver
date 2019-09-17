@@ -20,6 +20,7 @@ using Microsoft.IdentityModel.Tokens;
 using Milefa_WebServer.Helpers;
 using Milefa_WebServer.Services;
 using Milefa_Webserver.Services;
+using Newtonsoft.Json.Serialization;
 
 namespace Milefa_WebServer
 {
@@ -48,7 +49,9 @@ namespace Milefa_WebServer
             IMapper mapper = mappingConfig.CreateMapper();
             services.AddSingleton(mapper);
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc()
+                .SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                .AddJsonOptions(options => options.SerializerSettings.ContractResolver = new DefaultContractResolver());
 
 
             // authentication
