@@ -41,6 +41,7 @@ namespace Milefa_WebServer
             services.AddCors();
             services.AddDbContext<CompanyContext>(options =>
                 options.UseMySql(Configuration.GetConnectionString("MySqlConnection")));
+
                 //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             // Auto Mapper Configurations

@@ -76,7 +76,9 @@ namespace Milefa_WebServer.Services
             if (string.IsNullOrWhiteSpace(password))
                 throw new AppException("Password is Required");
 
-            if (_context.User.Any(x => x.Username == user.Username))
+
+            var t = (from u in _context.User where u.Username == user.Username select u).ToList();
+            if (t.Count > 0)
             {
                 throw new AppException($"Username \"{user.Username}\" is already taken");
             }
