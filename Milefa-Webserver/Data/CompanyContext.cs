@@ -1,9 +1,12 @@
 ﻿
 using Microsoft.CodeAnalysis.CSharp.Syntax;
-using Microsoft.EntityFrameworkCore;
+//using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 using Milefa_Webserver.Models;
 using Milefa_WebServer.Models;
+
+using Microsoft.EntityFrameworkCore;
+//using MySql.Data.EntityFrameworkCore.Extensions;
 
 namespace Milefa_WebServer.Data
 {

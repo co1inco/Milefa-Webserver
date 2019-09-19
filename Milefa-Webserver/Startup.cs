@@ -16,11 +16,13 @@ using Microsoft.Extensions.Options;
 using Milefa_WebServer.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.IdentityModel.Tokens;
 using Milefa_WebServer.Helpers;
 using Milefa_WebServer.Services;
 using Milefa_Webserver.Services;
 using Newtonsoft.Json.Serialization;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace Milefa_WebServer
 {
@@ -38,7 +40,9 @@ namespace Milefa_WebServer
         {
             services.AddCors();
             services.AddDbContext<CompanyContext>(options =>
-                options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+                    options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
+//                options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
+                //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
             // Auto Mapper Configurations
             var mappingConfig = new MapperConfiguration(mc =>
@@ -121,6 +125,10 @@ namespace Milefa_WebServer
                 .AllowAnyMethod()
                 .AllowAnyHeader());
 
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
             app.UseAuthentication(); // authentication
             app.UseHttpsRedirection();
             app.UseMvc();
