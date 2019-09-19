@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Globalization;
 using System.Security.Cryptography.X509Certificates;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 
 namespace Milefa_WebServer.Models
 {
@@ -59,8 +61,12 @@ namespace Milefa_WebServer.Models
 
         public int? Choise2ID { get; set; }
         public Department Choise2 { get; set; }
-        public ICollection<Skill> Skills { get; set; }
+        public HashSet<Skill> Skills { get; set; }
 
+        [ForeignKey("User")]
+        public int? UserID { get; set; }
+        [Required]
+        public User User { get; set; }
         /*
         public int? UserID { get; set; }
         public User User { get; set; }

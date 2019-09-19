@@ -21,5 +21,8 @@ namespace Milefa_WebServer.Models
         //TODO: Find a bether name
         // If the User is Teacher, Student, Traine, ... (for the rating)
         public string Type { get; set; }
+
+        public int? StudentID { get; set; }
+        public Student Student { get; set; }
     }
 }
