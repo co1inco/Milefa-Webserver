@@ -35,7 +35,9 @@ namespace Milefa_Webserver.Services
         {
             Role newRole = new Role { RoleName = role, UserID = userId };
 
-            if (!_context.Roles.AsNoTracking().Any(x => x.UserID == newRole.UserID && x.RoleName == newRole.RoleName))
+            var t = _context.Roles.AsNoTracking()
+                .Where(i => i.UserID == newRole.UserID && i.RoleName == newRole.RoleName).ToArray();
+            if (t.Length == 0)
             {
                 _context.Roles.Add(newRole);
                 _context.SaveChanges();

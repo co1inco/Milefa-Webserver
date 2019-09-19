@@ -1,0 +1,31 @@
+dotnet publish . -r linux-arm
+pscp.exe -r .\bin\Debug\netcoreapp2.0\ubuntu.16.04-arm\publish\* ${username}@${ip}:${destination}
+
+
+sudo apt-get install curl libunwind8 gettext
+curl -sSL -o dotnet.tar.gz https://dotnetcli.blob.core.windows.net/dotnet/Runtime/release/2.0.0/dotnet-runtime-latest-linux-arm.tar.gz
+sudo mkdir -p /opt/dotnet && sudo tar zxf dotnet.tar.gz -C /opt/dotnet
+sudo ln -s /opt/dotnet/dotnet /usr/local/bin
+
+https://docs.microsoft.com/en-us/aspnet/core/host-and-deploy/linux-apache?view=aspnetcore-2.2
+
+
+Apache:
+https://www.lxccu.com/doku.php?id=manuals:apache-reverse-proxy-manual&do=export_pdf
+
+sudo aptitude install apache2 apache2-utils libapache2-mod-rpaf vim apache2-utils -y
+sudo a2enmod ssl headers rewrite proxy proxy_http
+sudo aptitude install python-letsencrypt-apache
+
+sudo apt-get install python3-certbot-apache
+
+SSL certificate: (maybe not working, because different library?=
+sudo vi /etc/apache2/sites-available/<dns name>.<endung>.conf
+
+https://thomaslevesque.com/2018/04/17/hosting-an-asp-net-core-2-application-on-a-raspberry-pi/
+https://www.raspifun.de/viewtopic.php?t=24
+https://mariadb.com/kb/en/library/configuring-mariadb-for-remote-client-access/
+
+MariaDB root: RravW8JYkZ
+		webApi: FUegK6hBVs
+		monty: some_pass
