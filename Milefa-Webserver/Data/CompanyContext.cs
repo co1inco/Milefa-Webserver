@@ -1,4 +1,5 @@
 ﻿
+using System.Data.Entity;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 //using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
@@ -6,7 +7,7 @@ using Milefa_Webserver.Models;
 using Milefa_WebServer.Models;
 
 using Microsoft.EntityFrameworkCore;
-//using MySql.Data.EntityFrameworkCore.Extensions;
+using DbContext = Microsoft.EntityFrameworkCore.DbContext;
 
 namespace Milefa_WebServer.Data
 {
@@ -19,17 +20,17 @@ namespace Milefa_WebServer.Data
 //            optionsBuilder.UseSqlServer("Data Source=test.db");
 //        }
 
-        public DbSet<Student> Students { get; set; }
-        public DbSet<Department> Departments { get; set; }
-        public DbSet<Skill> Skills { get; set; }
-        public DbSet<User> User { get; set; }
-        public DbSet<Role> Roles { get; set; }
-        public DbSet<Rating> Rating { get; set; }
-        public DbSet<RatingAssignment> RatingAssignments { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<Student> Students { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<Department> Departments { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<Skill> Skills { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<User> User { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<Role> Roles { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<Rating> Rating { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<RatingAssignment> RatingAssignments { get; set; }
 
         // Link table for m:n relations
-        public DbSet<RequiredSkill> RequiredSkills { get; set; }
-        public DbSet<StudentSkill> StudentSkills { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<RequiredSkill> RequiredSkills { get; set; }
+        public Microsoft.EntityFrameworkCore.DbSet<StudentSkill> StudentSkills { get; set; }
         
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

@@ -22,7 +22,7 @@ using Milefa_WebServer.Helpers;
 using Milefa_WebServer.Services;
 using Milefa_Webserver.Services;
 using Newtonsoft.Json.Serialization;
-using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Pomelo.EntityFrameworkCore.MySql;
 
 namespace Milefa_WebServer
 {
@@ -40,7 +40,7 @@ namespace Milefa_WebServer
         {
             services.AddCors();
             services.AddDbContext<CompanyContext>(options =>
-                    options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
+                    options.UseMySql(Configuration.GetConnectionString("MySqlConnection")));
 //                options.UseMySQL(Configuration.GetConnectionString("MySqlConnection")));
                 //options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
 
