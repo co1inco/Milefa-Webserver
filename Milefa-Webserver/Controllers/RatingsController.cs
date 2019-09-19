@@ -166,12 +166,12 @@ namespace Milefa_Webserver.Controllers
             return _context.Rating.Any(e => (e.UserID == rating.UserID && e.StudentID == rating.StudentID));
         }
 
-        private async Task<List<Skill>> GetLinkedSkills(int ratingId)
+        private async Task<HashSet<Skill>> GetLinkedSkills(int ratingId)
         {
             var skillIds =
                 await (from r in _context.RatingAssignments where r.RatingID == ratingId select r.SkillID).ToListAsync();
 
-            List<Skill> skills = new List<Skill>();
+            HashSet<Skill> skills = new HashSet<Skill>();
             foreach (int skillId in skillIds)
             {
                 var skill = _context.Skills.FirstOrDefault(s => s.ID == skillId);

@@ -150,9 +150,9 @@ namespace Milefa_WebServer.Controllers
         }
 
 
-        private Skill[] GetSkills(int DepartmentID)
+        private HashSet<Skill> GetSkills(int DepartmentID)
         {
-            var skills = new List<Skill>();
+            var skills = new HashSet<Skill>();
 
             var skillIDs = _context.RequiredSkills.Where(
                 x => x.DepartmentID== DepartmentID);
@@ -163,7 +163,7 @@ namespace Milefa_WebServer.Controllers
                 if (skill != null)
                     skills.Add(skill);
             }
-            return skills.ToArray();
+            return skills;
         }
 
         private void ModifySkills(Department department, ICollection<Skill> skills)

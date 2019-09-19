@@ -54,6 +54,7 @@ namespace Milefa_Webserver.Controllers
         {
             if (_context.Roles.Any(x => x.RoleName == role.RoleName && x.UserID == role.UserID))
                 return BadRequest();
+
             _rolesService.AddUserRoles(role.UserID, role.RoleName);
 
             return _rolesService.GetUserRoles(role.UserID);

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Milefa_WebServer.Data;
+using Milefa_WebServer.Entities;
 
 namespace Milefa_WebServer.Models
 {
@@ -103,6 +104,47 @@ namespace Milefa_WebServer.Models
                 context.RequiredSkills.Add(s);
             }
             context.SaveChanges();
+
+
+            /*
+            var newRoles = new Role[]
+            {
+                new Role {ID = 1, RoleName = RoleStrings.Sysadmin, UserID = 1},
+                new Role {ID = 2, RoleName = RoleStrings.Admin, UserID = 1},
+                new Role {ID = 3, RoleName = RoleStrings.User, UserID = 1},
+                new Role {ID = 4, RoleName = RoleStrings.HumanResource, UserID = 1},
+            };
+            foreach (var r in newRoles)
+            {
+                context.Roles.Add(r);
+            }
+            context.SaveChanges();
+            */
+
+            /* //Not setting the correct password
+            System.Text.ASCIIEncoding enc = new System.Text.ASCIIEncoding();
+            var newUsers = new User[]
+            {
+                new User
+                {
+                    ID = 1,
+                    PasswordHash =
+                        enc.GetBytes(
+                            "PjarYd+u9GZe7ujUQAX7whlU8hSFVTbIZ8Blh/jd52J2kQZeH8sKVoTRvFSr5m9Ot8bvF0n3UV5nkm8qxsxHvg=="),
+                    PasswordSalt =
+                        enc.GetBytes(
+                            "oh6mD6RgaeBDT/NQ6lp3sMZ+vPLq2hBlb0aewKgs2MH2DuD6Bu90RDPU2NrGzBnqAz0ScwR8qFCdze5QVlMlPVoEnO9/vFpvbhkTBGeZKqcsAUbFrvlXglo9Cr1lwO7MqP5dVoKWjo4CB2hjCH1pjpi3719kK3GNOs3DpeP6MSs="),
+                    Username = "Colin",
+
+                },
+            };
+            foreach (var u in newUsers)
+            {
+                context.User.Add(u);
+            }
+            context.SaveChanges();
+            */
+            
 
         }
     }

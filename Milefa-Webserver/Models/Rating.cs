@@ -18,6 +18,6 @@ namespace Milefa_Webserver.Models
         public User User { get; set; }
 
         [NotMapped]
-        public ICollection<Skill> Skills { get; set; }
+        public HashSet<Skill> Skills { get; set; }
     }
 }
