@@ -62,7 +62,7 @@ namespace Milefa_WebServer.Controllers
 
                 if (s.Skills != null)
                 {
-                    s.Skills = GetSkills(s.ID);
+                    s.Skills = await GetSkills(s.ID);
                 }
 
                 if (!User.IsInRole(RoleStrings.Admin))
@@ -99,7 +99,7 @@ namespace Milefa_WebServer.Controllers
 
             if (student.Skills != null)
             {
-                student.Skills = GetSkills(student.ID);
+                student.Skills = await GetSkills(student.ID);
             }
 
             if (!User.IsInRole(RoleStrings.Admin))
@@ -130,7 +130,7 @@ namespace Milefa_WebServer.Controllers
             student.DateValide = student.DateValide.Date;
 
             _context.Entry(student).State = EntityState.Modified;
-            ModifySkills(student, student.Skills);
+            await ModifySkills(student, student.Skills);
 //            if (await TryUpdateModelAsync<Student>)
             try
             {
@@ -176,13 +176,16 @@ namespace Milefa_WebServer.Controllers
             var newStudent = new Student(student);
             _context.Students.Add(newStudent);
 
-            ModifySkills(newStudent, skills);
+            await ModifySkills(newStudent, skills);
             await _context.SaveChangesAsync();
 
 
-            var newUser = new User { Username = GenerateStudentUsername(student), Type = Usertypes.Student };
-            _userService.CreateOrReset(newUser, _appSettings.NewUserPass);
+            var newUser = new User { Username = GenerateStudentUsername(student), Type = Usertypes.Student, StudentID = newStudent.ID};
+            var u = _userService.CreateOrReset(newUser, _appSettings.NewUserPass);
 
+            newStudent.UserID = u.ID;
+            _context.Entry(newStudent).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
             newStudent.Skills = skills;
             return CreatedAtAction("GetStudent", new { id = newStudent.ID }, newStudent);
@@ -199,7 +202,7 @@ namespace Milefa_WebServer.Controllers
             {
                 return NotFound();
             }
-            RemoveStudent(student);
+            await RemoveStudent(student);
             return student;
         }
 
@@ -212,7 +215,7 @@ namespace Milefa_WebServer.Controllers
             var del = await (from s in _context.Students where s.DateValide == date select s).AsNoTracking().ToListAsync();
             foreach (Student student in del)
             {
-                RemoveStudent(student);
+                await RemoveStudent(student);
             }
 
             return del.ToArray();
@@ -241,28 +244,27 @@ namespace Milefa_WebServer.Controllers
             return _context.Students.Any(e => (e.PersNr == student.PersNr && e.DateValide == student.DateValide));
         }
 
-        private Skill[] GetSkills(int studentID)
+        private async Task<HashSet<Skill>> GetSkills(int studentId)
         {
-            var skills = new List<Skill>();
+            var skills = new HashSet<Skill>();
 
-            var skillIDs = _context.StudentSkills.Where(
-                x => x.StudentID == studentID);
+            var skillIDs = await _context.StudentSkills.Where(x => x.StudentID == studentId).ToArrayAsync();
 
             foreach (var sk in skillIDs)
             {
-                var skill = _context.Skills.Single(i => i.ID == sk.SkillID);
+                var skill = await _context.Skills.SingleAsync(i => i.ID == sk.SkillID);
                 if (skill != null)
                     skills.Add(skill);
             }
-            return skills.ToArray();
+            return skills;
         }
 
-        private void ModifySkills(Student student, ICollection<Skill> skills)
+        private async Task ModifySkills(Student student, ICollection<Skill> skills)
         {
             if (skills == null)
                 return;
 
-            var linkedSkills = _context.StudentSkills.AsNoTracking().Where(i => i.StudentID == student.ID).ToList();
+            var linkedSkills = await _context.StudentSkills.AsNoTracking().Where(i => i.StudentID == student.ID).ToListAsync();
 
             foreach (Skill skill in skills)
             {
@@ -294,23 +296,27 @@ namespace Milefa_WebServer.Controllers
                 + student.PersNr.ToString();
         }
 
-        private void RemoveStudent(Student student)
+        private async Task RemoveStudent(Student student)
         {
-            _userService.Delete(GenerateStudentUsername(student));
-            _context.SaveChanges();
+            if (student.UserID == null)
+            {
+                return;
+            }
+            _userService.Delete(student.UserID.Value);
+            await _context.SaveChangesAsync();
 
-            ModifySkills(student, new List<Skill>());
-            _context.SaveChanges();
+            await ModifySkills(student, new List<Skill>());
+            await _context.SaveChangesAsync();
 
  //           _ratingService.RemoveRating(student);
  //           _context.SaveChanges();
 
-            var delStudent = _context.Students.AsNoTracking().FirstOrDefault(i => i.ID == student.ID);
+            var delStudent = await _context.Students.AsNoTracking().FirstOrDefaultAsync(i => i.ID == student.ID);
             if (delStudent != null)
             {
                 _context.Students.Remove(delStudent);
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
     }
 }
