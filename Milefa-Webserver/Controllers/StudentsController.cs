@@ -126,7 +126,7 @@ namespace Milefa_WebServer.Controllers
         {
             if (id != student.ID)
             {
-                return BadRequest();
+                return BadRequest("Student not found");
             }
             student.DateValide = student.DateValide.Date;
 
@@ -174,7 +174,7 @@ namespace Milefa_WebServer.Controllers
 
             if (StudentExists(student))
             {
-                return BadRequest();
+                return BadRequest("Student already exists");
             }
 
             var skills = student.Skills;
