@@ -59,8 +59,9 @@ namespace Milefa_WebServer.Controllers
                 .ToListAsync();
 
             var currentUserId = int.Parse(User.Identity.Name);
-            foreach (Student s in students) {
-
+            foreach (Student s in students)
+            {
+                s.User = null;
                 if (s.Skills != null)
                 {
                     s.Skills = await GetSkills(s.ID);
@@ -110,6 +111,9 @@ namespace Milefa_WebServer.Controllers
                 student._Class = null;
                 student.Gender = null;
             }
+
+            //We don't have to return the Userdata here, also the Json response becomes invalid if send to non admin users?!
+            student.User = null;
 
             return student;
         }
