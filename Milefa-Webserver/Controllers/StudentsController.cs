@@ -80,6 +80,62 @@ namespace Milefa_WebServer.Controllers
             return students;
         }
 
+        [HttpGet("assign")]
+        public async Task<ActionResult<IEnumerable<Student>>> AssignAllStudents()
+        {
+            var students = await _context.Students
+                .Include(i => i.DeployedDep)
+                .ThenInclude(i => i.RequiredSkills)
+                .Include(i => i.Choise1)
+                .ThenInclude(i => i.RequiredSkills)
+                .Include(i => i.Choise2)
+                .ThenInclude(i => i.RequiredSkills)
+                .Include(i => i.Skills)
+                .ToArrayAsync();
+
+            var currentUserId = int.Parse(User.Identity.Name);
+            foreach (Student s in students)
+            {
+                s.User = null;
+                if (s.Skills != null)
+                {
+                    s.Skills = await GetSkills(s.ID);
+                }
+
+                if (!User.IsInRole(RoleStrings.Admin))
+                {
+                    s.Name = null;
+                    s.School = null;
+                    s._Class = null;
+                    s.Gender = null;
+                }
+
+            }
+
+            var departments = await _context.Departments
+                .Include(i => i.RequiredSkills)
+                .ToArrayAsync();
+
+            foreach (Department department in departments)
+            {
+                department.RequiredSkills = GetDepartmentReq(department.ID);
+            }
+
+            AutoDepartmentAssignment.GenerateUserAssignments(students, departments, out students);
+
+            foreach (Student student in students)
+            {
+                await TryUpdateModelAsync(
+                    student,
+                    "",
+                    s => s.DeployedDepID);
+            }
+
+            await _context.SaveChangesAsync();
+
+            return students;
+        }
+
         // GET: api/Students/5
         [HttpGet("{id}")]
         public async Task<ActionResult<Student>> GetStudent(int id)
@@ -273,6 +329,22 @@ namespace Milefa_WebServer.Controllers
         private bool StudentExists(Student student)
         {
             return _context.Students.Any(e => (e.PersNr == student.PersNr && e.DateValide == student.DateValide));
+        }
+
+        private HashSet<Skill> GetDepartmentReq(int DepartmentID)
+        {
+            var skills = new HashSet<Skill>();
+
+            var skillIDs = _context.RequiredSkills.Where(
+                x => x.DepartmentID == DepartmentID);
+
+            foreach (var sk in skillIDs)
+            {
+                var skill = _context.Skills.Single(i => i.ID == sk.SkillID);
+                if (skill != null)
+                    skills.Add(skill);
+            }
+            return skills;
         }
 
         private async Task<HashSet<Skill>> GetSkills(int studentId)
