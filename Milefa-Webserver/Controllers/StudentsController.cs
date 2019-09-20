@@ -80,6 +80,7 @@ namespace Milefa_WebServer.Controllers
             return students;
         }
 
+        [Authorize(Roles = RoleStrings.HumanResource)]
         [HttpGet("assign")]
         public async Task<ActionResult<IEnumerable<Student>>> AssignAllStudents()
         {
@@ -109,7 +110,6 @@ namespace Milefa_WebServer.Controllers
                     s._Class = null;
                     s.Gender = null;
                 }
-
             }
 
             var departments = await _context.Departments
@@ -135,6 +135,7 @@ namespace Milefa_WebServer.Controllers
 
             return students;
         }
+
 
         // GET: api/Students/5
         [HttpGet("{id}")]
