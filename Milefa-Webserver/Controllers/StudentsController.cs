@@ -138,6 +138,23 @@ namespace Milefa_WebServer.Controllers
             }
 
             _context.Entry(student).State = EntityState.Modified;
+
+            var isAdmin = User.IsInRole(RoleStrings.Admin);
+            if (!(isAdmin && student.Name != null))
+                _context.Entry(student).Property(x => x.Name).IsModified = false;
+            if (!(isAdmin && student.School != null))
+                _context.Entry(student).Property(x => x.School).IsModified = false;
+            if (!(isAdmin && student._Class != null))
+                _context.Entry(student).Property(x => x._Class).IsModified = false;
+            if (!(isAdmin && student.Gender != null))
+                _context.Entry(student).Property(x => x.Gender).IsModified = false;
+            if (!(isAdmin && student.DeployedDepID != null))
+                _context.Entry(student).Property(x => x.DeployedDepID).IsModified = false;
+            if (!(isAdmin && student.DateValide != null))
+                _context.Entry(student).Property(x => x.DateValide).IsModified = false;
+            if (!(isAdmin && student.UserID != null))
+                _context.Entry(student).Property(x => x.UserID).IsModified = false;
+
             await ModifySkills(student, student.Skills);
 //            if (await TryUpdateModelAsync<Student>)
             try
