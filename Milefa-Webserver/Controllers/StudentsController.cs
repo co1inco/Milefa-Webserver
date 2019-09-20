@@ -182,20 +182,22 @@ namespace Milefa_WebServer.Controllers
 
             // Not copying to another object results in EF6 trying to Identity_Insert (copying does not copy ID) 
             var newStudent = new Student(student);
+
+            var newUser = new User { Username = GenerateStudentUsername(student), Type = Usertypes.Student, StudentID = newStudent.ID };
+            var u = _userService.CreateOrReset(newUser, _appSettings.NewUserPass);
+
+            newStudent.UserID = u.ID;
             _context.Students.Add(newStudent);
 
             await ModifySkills(newStudent, skills);
             await _context.SaveChangesAsync();
 
-
-            var newUser = new User { Username = GenerateStudentUsername(student), Type = Usertypes.Student, StudentID = newStudent.ID};
-            var u = _userService.CreateOrReset(newUser, _appSettings.NewUserPass);
-
-            newStudent.UserID = u.ID;
-            _context.Entry(newStudent).State = EntityState.Modified;
+            newUser.StudentID = newStudent.ID;
+            _context.Entry(newUser).State = EntityState.Modified;
             await _context.SaveChangesAsync();
 
             newStudent.Skills = skills;
+            newStudent.User = null;
             return CreatedAtAction("GetStudent", new { id = newStudent.ID }, newStudent);
         }
 
