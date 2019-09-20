@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.EnvironmentVariables;
 using Microsoft.Extensions.Options;
 using Milefa_Webserver.Entities;
 using Milefa_WebServer.Data;
@@ -128,6 +129,13 @@ namespace Milefa_WebServer.Controllers
                 return BadRequest();
             }
             student.DateValide = student.DateValide.Date;
+
+            if (student.User == null || student.UserID == null)
+            {
+                var s = _context.Students.AsNoTracking().FirstOrDefaultAsync(i => i.ID == student.ID);
+                student.User = s.Result.User;
+                student.UserID = s.Result.UserID;
+            }
 
             _context.Entry(student).State = EntityState.Modified;
             await ModifySkills(student, student.Skills);
