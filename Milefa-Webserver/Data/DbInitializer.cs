@@ -43,6 +43,7 @@ namespace Milefa_WebServer.Models
             }
             context.SaveChanges();
 
+            /*
             var students = new Student[]
             {
                 new Student{Name="Colin", School="LSBK", _Class="BS8ES1", Gender=Gender.Male, PersNr=-1, Breakfast=true, Lunch=true,
@@ -55,7 +56,9 @@ namespace Milefa_WebServer.Models
                 context.Students.Add(s);
             }
             context.SaveChanges();
+            */
 
+            /*
             var studentSkill = new StudentSkill[]
             {
                 new StudentSkill
@@ -74,6 +77,7 @@ namespace Milefa_WebServer.Models
                 context.StudentSkills.Add(s);
             }
             context.SaveChanges();
+            */
 
             var rsa = new RequiredSkill[]
             {
