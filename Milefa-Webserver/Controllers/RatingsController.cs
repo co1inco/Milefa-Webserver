@@ -17,7 +17,7 @@ using Remotion.Linq.Clauses;
 namespace Milefa_Webserver.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class RatingsController : ControllerBase
     {

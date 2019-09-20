@@ -65,7 +65,6 @@ namespace Milefa_WebServer.Models
 
         [ForeignKey("User")]
         public int? UserID { get; set; }
-        [Required]
         public User User { get; set; }
         /*
         public int? UserID { get; set; }

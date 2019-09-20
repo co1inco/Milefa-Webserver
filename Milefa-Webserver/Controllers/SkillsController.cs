@@ -14,7 +14,7 @@ using Milefa_Webserver.Services;
 namespace Milefa_WebServer.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     public class SkillsController : ControllerBase
     {
