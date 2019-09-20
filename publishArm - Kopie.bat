@@ -1,4 +1,4 @@
-cd Milefa-Webserver\bin\Release\netcoreapp2.2\linux-arm\publish\
+cd Milefa-Webserver\bin\Release\netcoreapp2.2\publish\
 mkdir tmp
 copy * tmp\
 del tmp\appsettings.json
