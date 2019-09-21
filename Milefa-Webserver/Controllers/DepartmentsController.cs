@@ -70,7 +70,7 @@ namespace Milefa_WebServer.Controllers
         }
 
         // PUT: api/Departments/5
-        [Authorize(Roles = RoleStrings.Admin)]
+        [Authorize(Roles = RoleStrings.AccessAdmin)]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutDepartment(int id, Department department)
         {
@@ -107,7 +107,7 @@ namespace Milefa_WebServer.Controllers
         /// </summary>
         /// <param name="department"></param>
         /// <returns></returns>
-        [Authorize(Roles = RoleStrings.Admin)]
+        [Authorize(Roles = RoleStrings.AccessAdmin)]
         [HttpPost]
         public async Task<ActionResult<Department>> PostDepartment(Department department)
         {

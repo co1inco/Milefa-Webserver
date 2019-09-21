@@ -13,5 +13,6 @@ namespace Milefa_WebServer.Models
         public int MaxEmployes { get; set; }
         public HashSet<Skill> RequiredSkills { get; set; }
 
+        public string AssignmentRole { get; set; }
     }
 }

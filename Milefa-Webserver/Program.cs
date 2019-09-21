@@ -26,7 +26,7 @@ namespace Milefa_WebServer
                 try
                 {
                     var context = services.GetRequiredService<CompanyContext>();
-//                    DbInitializer.Initialize(context);
+                    DbInitializer.Initialize(context);
                 }
                 catch (Exception ex)
                 {

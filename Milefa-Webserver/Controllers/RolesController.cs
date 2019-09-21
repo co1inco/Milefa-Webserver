@@ -8,8 +8,10 @@ using Microsoft.EntityFrameworkCore;
 using Milefa_WebServer.Data;
 using Milefa_WebServer.Models;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 using Milefa_WebServer.Entities;
 using Milefa_Webserver.Services;
+using Milefa_WebServer.Services;
 using Remotion.Linq.Clauses;
 
 namespace Milefa_Webserver.Controllers
@@ -21,17 +23,22 @@ namespace Milefa_Webserver.Controllers
     {
         private readonly CompanyContext _context;
         private readonly IRolesService _rolesService;
+        private readonly IUserService _userService;
 
         public RolesController(
             CompanyContext context,
-            IRolesService rolesService
+            IRolesService rolesService,
+            IUserService userService
             )
         {
             _context = context;
             _rolesService = rolesService;
+            _userService = userService;
         }
 
-        // GET: api/Roles/5
+
+
+        // GET: api/Roles/5 Get all roles a user as by his id
         [HttpGet("{id}")]
         public async Task<ActionResult<IEnumerable<Role>>> GetRole(int id)
         {
@@ -46,6 +53,19 @@ namespace Milefa_Webserver.Controllers
             return role;
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<string>>> GetAvailableRoles()
+        {
+            if (User.IsInRole(RoleStrings.Sysadmin))
+            {
+                return RoleStrings.AvailableRolesSysadmin;
+            } else if (User.IsInRole(RoleStrings.Admin))
+            {
+                return RoleStrings.AvailableRolesAdmin;
+            } //else if (User.IsInRole(Rol))
+            return RoleStrings.AvailableRoles;
+        }
+
 
         // POST: api/Roles
         [Authorize(Roles = RoleStrings.Admin)]
@@ -54,6 +74,11 @@ namespace Milefa_Webserver.Controllers
         {
             if (_context.Roles.Any(x => x.RoleName == role.RoleName && x.UserID == role.UserID))
                 return BadRequest();
+
+            if (role.RoleName == RoleStrings.Sysadmin && !User.IsInRole(RoleStrings.Sysadmin))
+            {
+                return Forbid();
+            }
 
             _rolesService.AddUserRoles(role.UserID, role.RoleName);
 
@@ -70,6 +95,11 @@ namespace Milefa_Webserver.Controllers
             if (role == null)
             {
                 return NotFound();
+            }
+
+            if (role.RoleName == RoleStrings.Sysadmin && !User.IsInRole(RoleStrings.Sysadmin))
+            {
+                return Forbid();
             }
 
             _context.Roles.Remove(role);

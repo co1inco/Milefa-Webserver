@@ -30,18 +30,21 @@ namespace Milefa_WebServer.Controllers
         private readonly CompanyContext _context;
         private readonly IUserService _userService;
         private readonly IRatingService _ratingService;
+        private readonly IRolesService _roleService;
 
         public StudentsController(
             CompanyContext context,
             IUserService user,
             IOptions<AppSettings> appSettings,
-            IRatingService ratingService
+            IRatingService ratingService,
+            IRolesService rolesService
             )
         {
             _userService = user;
             _appSettings = appSettings.Value;
             _context = context;
             _ratingService = ratingService;
+            _roleService = rolesService;
         }
 
         // GET: api/Students
@@ -217,6 +220,9 @@ namespace Milefa_WebServer.Controllers
                 _context.Entry(student).Property(x => x.UserID).IsModified = false;
 
             await ModifySkills(student, student.Skills);
+
+            await AssignUserRole(student);
+
 //            if (await TryUpdateModelAsync<Student>)
             try
             {
@@ -421,6 +427,36 @@ namespace Milefa_WebServer.Controllers
                 _context.Students.Remove(delStudent);
             }
             await _context.SaveChangesAsync();
+        }
+
+        private async Task AssignUserRole(Student student)
+        {
+            if (student.DeployedDepID != null &&
+                student.UserID != null)
+            {
+                // don't want to remove Admin Rights here
+                foreach (string availableRole in RoleStrings.AvailableRoles)
+                {
+                    await _roleService.RemoveUserRole(student.UserID.Value, availableRole);
+                }
+
+                //await _context.SaveChangesAsync();
+
+
+                var d = _context.Departments.FindAsync(student.DeployedDepID);
+                if (d != null)
+                {
+                    var roleToAssign = d.Result.AssignmentRole;
+
+                    var found = RoleStrings.AvailableRoles.Any(availableRole => availableRole == roleToAssign);
+
+                    if (found)
+                    {
+                        _roleService.AddUserRoles(student.UserID.Value, roleToAssign); // saves changes here!!!
+                    }
+
+                }
+            }
         }
     }
 }

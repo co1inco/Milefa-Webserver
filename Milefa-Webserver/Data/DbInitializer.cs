@@ -32,11 +32,14 @@ namespace Milefa_WebServer.Models
             context.SaveChanges();
 
             var dep = new Department[]
-{
-                new Department{Name="dep1", MaxEmployes=5},
-                new Department{Name="dep2", MaxEmployes=10},
-                new Department{Name="dep3", MaxEmployes=2}
-};
+            {
+                new Department{Name="Geschäftsleitung", MaxEmployes=2, AssignmentRole = RoleStrings.HumanResource},
+                new Department{Name="Personalabteilung", MaxEmployes=10, AssignmentRole = RoleStrings.HumanResource},
+                new Department{Name="IT-Abteilung", MaxEmployes=9, AssignmentRole = RoleStrings.It},
+                new Department{Name="dep4", MaxEmployes=2},
+                new Department{Name="dep5", MaxEmployes=2},
+
+            };
             foreach (Department d in dep)
             {
                 context.Departments.Add(d);

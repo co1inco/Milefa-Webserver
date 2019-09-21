@@ -13,7 +13,9 @@ namespace Milefa_Webserver.Services
     {
         List<Role> GetUserRoles(int id);
         void AddUserRoles(int userId, string role);
-        void RemoveUserRole(int id);
+        Task RemoveUserRoles(int id);
+        Task RemoveUserRole(int id, string role);
+
     }
 
 
@@ -44,16 +46,33 @@ namespace Milefa_Webserver.Services
             }
         }
 
-        public void RemoveUserRole(int id)
+        public async Task RemoveUserRoles(int userID)
         {
-            var role = _context.Roles.Find(id);
-            if (role == null)
+            var user = await _context.User.FindAsync(userID);
+
+            if (user == null)
             {
                 return;
             }
 
-            _context.Roles.Remove(role);
-            _context.SaveChanges();
+
+            foreach (Role userRole in user.Roles)
+            {
+                _context.Roles.Remove(userRole);
+
+            }
+
+        }
+
+        public async Task RemoveUserRole(int userID, string role)
+        {
+            var r = await _context.Roles.FirstOrDefaultAsync(i => i.RoleName == role && i.UserID == userID);
+            if (r == null)
+            {
+                return;
+            }
+
+            _context.Roles.Remove(r);
         }
     }
 }
