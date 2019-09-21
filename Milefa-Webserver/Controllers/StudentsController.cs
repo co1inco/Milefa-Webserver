@@ -190,34 +190,39 @@ namespace Milefa_WebServer.Controllers
         {
             if (id != student.ID)
             {
-                return BadRequest("Student not found");
+                return BadRequest();
             }
             student.DateValide = student.DateValide.Date;
 
-            if (student.User == null || student.UserID == null)
+            var studentToUpdate = await _context.Students.FirstOrDefaultAsync(i => i.ID == student.ID);
+            if (studentToUpdate == null)
             {
-                var s = _context.Students.AsNoTracking().FirstOrDefaultAsync(i => i.ID == student.ID);
-                student.User = s.Result.User;
-                student.UserID = s.Result.UserID;
+                return BadRequest("Student not found");
             }
 
-            _context.Entry(student).State = EntityState.Modified;
+            if (student.UserID != null)
+                studentToUpdate.UserID = student.UserID;
 
-            var isAdmin = User.IsInRole(RoleStrings.Admin);
-            if (!(isAdmin && student.Name != null))
-                _context.Entry(student).Property(x => x.Name).IsModified = false;
-            if (!(isAdmin && student.School != null))
-                _context.Entry(student).Property(x => x.School).IsModified = false;
-            if (!(isAdmin && student._Class != null))
-                _context.Entry(student).Property(x => x._Class).IsModified = false;
-            if (!(isAdmin && student.Gender != null))
-                _context.Entry(student).Property(x => x.Gender).IsModified = false;
-            if (!(isAdmin && student.DeployedDepID != null))
-                _context.Entry(student).Property(x => x.DeployedDepID).IsModified = false;
-            if (!(isAdmin && student.DateValide != null))
-                _context.Entry(student).Property(x => x.DateValide).IsModified = false;
-            if (!(isAdmin && student.UserID != null))
-                _context.Entry(student).Property(x => x.UserID).IsModified = false;
+            if (User.IsInRole(RoleStrings.Admin))
+            {
+                if (student.Name != null)
+                    studentToUpdate.Name = student.Name;
+                if (student.School != null)
+                    studentToUpdate.School = student.School;
+                if (student._Class != null)
+                    studentToUpdate._Class = student._Class;
+                if (student.Gender != null)
+                    studentToUpdate.Gender = student.Gender;
+            }
+            if (student.DeployedDepID != null)
+                studentToUpdate.DeployedDepID = student.DeployedDepID;
+            if (student.DateValide != null)
+                studentToUpdate.DateValide = student.DateValide;
+            studentToUpdate.Breakfast = student.Breakfast;
+            studentToUpdate.Lunch = student.Lunch;
+            studentToUpdate.Choise1ID = student.Choise1ID;
+            studentToUpdate.Choise2ID = student.Choise2ID;
+            studentToUpdate.PersNr = student.PersNr;
 
             await ModifySkills(student, student.Skills);
 
