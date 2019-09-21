@@ -2,8 +2,10 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Reflection.Metadata;
 using System.Security.Claims;
 using System.Text;
+using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
@@ -167,6 +169,23 @@ namespace WebApi.Controllers
             return Ok(user);
         }
 
+        [Authorize(Roles = RoleStrings.AccessAdmin)]
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateUser(int id, UserDto user)
+        {
+            if (id != user.Id)
+            {
+                return BadRequest("User not found");
+            }
+
+            var userUpdate = await _context.User.FindAsync(user.Id);
+            userUpdate.Type = user.Type;
+            await _context.SaveChangesAsync();
+
+            _userService.Update(userUpdate, user.Password);
+
+            return NoContent();
+        }
         // remove user => remove ratings
     }
 }

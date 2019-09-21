@@ -123,7 +123,7 @@ namespace Milefa_WebServer.Services
 
         public void Update(User userParam, string password = null)
         {
-            var user = _context.User.Find(userParam.ID);
+            var user = _context.User.FirstOrDefault(i => i.ID == userParam.ID);
 
             if (user == null)
                 throw new AppException("User not found");
