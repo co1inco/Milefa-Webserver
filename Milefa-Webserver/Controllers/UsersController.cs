@@ -186,6 +186,28 @@ namespace WebApi.Controllers
 
             return NoContent();
         }
+
+        [Authorize(Roles = RoleStrings.AccessAdmin)]
+        [HttpPost]
+        public async Task<IActionResult> AddUser(UserDto user)
+        {
+
+            User newUserTmp = new User()
+            {
+                Username = user.Username,
+            };
+            _userService.Create(newUserTmp, user.Password);
+
+            var userUpdate = await _context.User.FindAsync(user.Id);
+            userUpdate.Type = user.Type;
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
+
+
+
+
         // remove user => remove ratings
     }
 }
