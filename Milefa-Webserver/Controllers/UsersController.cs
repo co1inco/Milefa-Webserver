@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Milefa_WebServer.Dtos;
@@ -122,7 +123,6 @@ namespace WebApi.Controllers
             }
         }
 
-        [Authorize(Roles = RoleStrings.AccessAdmin)]
         [HttpGet]
         public IActionResult GetAll()
         {
@@ -130,6 +130,8 @@ namespace WebApi.Controllers
 
             foreach (User user in users)
             {
+                user.PasswordHash = null;
+                user.PasswordSalt = null;
                 user.Roles = _roleService.GetUserRoles(user.ID);
             }
 
