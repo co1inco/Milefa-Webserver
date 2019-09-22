@@ -65,8 +65,31 @@ namespace Milefa_WebServer.Controllers
             {
                 try
                 {
+                    Console.WriteLine(Request.Query["date"]);
                     DateTime date = DateTime.Parse(Request.Query["date"]);
+
+                    //TODO: Fixing wrong parsing on rpi. Do it properly
+                    date = date.AddHours(2);
+                    date = date.Date;
+
+                    var test = await _context.Students.FirstAsync(i => i.ID == 19);
+                    Console.WriteLine(test.DateValide);
+                    Console.WriteLine(date);
+                    Console.WriteLine(date == test.DateValide);
+
+                    //students = await _context.Students
+                    //    .Include(i => i.DeployedDep)
+                    //    .ThenInclude(i => i.RequiredSkills)
+                    //    .Include(i => i.Choise1)
+                    //    .ThenInclude(i => i.RequiredSkills)
+                    //    .Include(i => i.Choise2)
+                    //    .ThenInclude(i => i.RequiredSkills)
+                    //    .Include(i => i.Skills)
+                    //    .Where(i => i.DateValide.ToUniversalTime() == date.ToUniversalTime())
+                    //    .ToListAsync();
+                    //students = await (from s in tmp where s.DateValide == date select s).ToListAsync();
                     students = await tmp.Where(i => i.DateValide == date).ToListAsync();
+                    
 
                 }
                 catch (FormatException e)
