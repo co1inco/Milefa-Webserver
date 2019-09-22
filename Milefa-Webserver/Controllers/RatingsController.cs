@@ -52,7 +52,7 @@ namespace Milefa_Webserver.Controllers
         }
 
         // GET: api/Ratings/5
-        [Authorize(Roles = RoleStrings.AccessAdmin)]
+        //[Authorize(Roles = RoleStrings.AccessAdmin)]
         [HttpGet("{id}")]
         public async Task<ActionResult<IEnumerable<Rating>>> GetRating(int id)
         {
@@ -102,10 +102,10 @@ namespace Milefa_Webserver.Controllers
         [HttpPost]
         public async Task<ActionResult<Rating>> PostRating(Rating rating)
         {
-            if (! (User.IsInRole(RoleStrings.Admin) || rating.UserID == int.Parse(User.Identity.Name)))
-            {
-                return Forbid();
-            }
+            //if (! (User.IsInRole(RoleStrings.Admin) || rating.UserID == int.Parse(User.Identity.Name)))
+            //{
+            //    return Forbid();
+            //}
 
             if (rating.UserID == 0)
             {
