@@ -51,15 +51,34 @@ namespace Milefa_WebServer.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Student>>> GetStudents()
         {
-            var students = await _context.Students
+            var tmp = _context.Students
                 .Include(i => i.DeployedDep)
-                    .ThenInclude(i => i.RequiredSkills)
+                .ThenInclude(i => i.RequiredSkills)
                 .Include(i => i.Choise1)
-                    .ThenInclude(i => i.RequiredSkills) 
+                .ThenInclude(i => i.RequiredSkills)
                 .Include(i => i.Choise2)
-                    .ThenInclude(i => i.RequiredSkills)
-                .Include(i => i.Skills)
-                .ToListAsync();
+                .ThenInclude(i => i.RequiredSkills)
+                .Include(i => i.Skills);
+
+            List<Student> students = new List<Student>();
+            if (Request.Query.ContainsKey("date"))
+            {
+                try
+                {
+                    DateTime date = DateTime.Parse(Request.Query["date"]);
+                    students = await tmp.Where(i => i.DateValide == date).ToListAsync();
+
+                }
+                catch (FormatException e)
+                {
+                    BadRequest("Datestring not suported");
+                }
+            }
+            else
+            {
+                students = await tmp.ToListAsync();
+            }
+            
 
             var currentUserId = int.Parse(User.Identity.Name);
             foreach (Student s in students)
@@ -184,7 +203,7 @@ namespace Milefa_WebServer.Controllers
         /// <param name="id"></param>
         /// <param name="student"></param>
         /// <returns></returns>
-        [Authorize(Roles = RoleStrings.HumanResource)]
+        [Authorize(Roles = RoleStrings.AccessHumanResource)]
         [HttpPut("{id}")]
         public async Task<IActionResult> PutStudent(int id, Student student)
         {
@@ -254,7 +273,7 @@ namespace Milefa_WebServer.Controllers
         /// </summary>
         /// <param name="student"></param>
         /// <returns></returns>
-        [Authorize(Roles = RoleStrings.HumanResource)]
+        [Authorize(Roles = RoleStrings.AccessHumanResource)]
         [HttpPost]
         public async Task<ActionResult<Student>> PostStudent([Bind(
             "Name,School,_Class,Gender,DateValide,PersNr,Breakfast,Lunch,DeployedDepID,Choise1ID,Choise2ID,Skills"
