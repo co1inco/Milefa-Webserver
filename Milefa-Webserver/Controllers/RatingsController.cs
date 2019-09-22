@@ -33,9 +33,22 @@ namespace Milefa_Webserver.Controllers
             _context = context;
         }
 
-        // GET: api/Ratings
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Rating>>> GetRating()
+        public async Task<ActionResult<IEnumerable<Rating>>> GetRatings()
+        {
+            var ratings = await _context.Rating.ToListAsync();
+
+            foreach (var rating in ratings)
+            {
+                rating.Skills = await GetLinkedSkills(rating.ID);
+            }
+
+            return ratings;
+        }
+
+        // GET: api/Ratings
+        [HttpGet("user")]
+        public async Task<ActionResult<IEnumerable<Rating>>> GetUserRating()
         {
             var userId = int.Parse(User.Identity.Name);
             var ratings = await (
@@ -53,11 +66,18 @@ namespace Milefa_Webserver.Controllers
 
         // GET: api/Ratings/5
         //[Authorize(Roles = RoleStrings.AccessAdmin)]
-        [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<Rating>>> GetRating(int id)
+        [HttpGet("user/{id}")]
+        public async Task<ActionResult<IEnumerable<Rating>>> GetUserRating(int id)
         {
             // Id => userId
             return await (from r in _context.Rating where r.UserID == id select r).ToListAsync();
+        }
+
+        [HttpGet("student/{id}")]
+        public async Task<ActionResult<IEnumerable<Rating>>> GetStudentRating(int id)
+        {
+            // Id => userId
+            return await (from r in _context.Rating where r.StudentID == id select r).ToListAsync();
         }
 
 
