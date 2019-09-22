@@ -436,8 +436,6 @@ namespace Milefa_WebServer.Controllers
             {
                 return;
             }
-            _userService.Delete(student.UserID.Value);
-            await _context.SaveChangesAsync();
 
             await ModifySkills(student, new List<Skill>());
             await _context.SaveChangesAsync();
@@ -450,6 +448,9 @@ namespace Milefa_WebServer.Controllers
             {
                 _context.Students.Remove(delStudent);
             }
+            await _context.SaveChangesAsync();
+
+            _userService.Delete(student.UserID.Value);
             await _context.SaveChangesAsync();
         }
 
