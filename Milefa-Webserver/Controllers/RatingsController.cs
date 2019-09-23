@@ -69,8 +69,13 @@ namespace Milefa_Webserver.Controllers
         [HttpGet("user/{id}")]
         public async Task<ActionResult<IEnumerable<Rating>>> GetUserRating(int id)
         {
-            // Id => userId
-            return await (from r in _context.Rating where r.UserID == id select r).ToListAsync();
+            var ratings = await (from r in _context.Rating where r.UserID == id select r).ToListAsync();
+            foreach (var rating in ratings)
+            {
+                rating.Skills = await GetLinkedSkills(rating.ID);
+            }
+
+            return ratings;
         }
 
         [HttpGet("student/{id}")]
@@ -152,7 +157,7 @@ namespace Milefa_Webserver.Controllers
             await _context.SaveChangesAsync();
 
             newRating.User = null;
-            return CreatedAtAction("GetRating", new { id = newRating.ID }, newRating);
+            return CreatedAtAction("GetRatings", new { id = newRating.ID }, newRating);
         }
 
         // DELETE: api/Ratings/5
