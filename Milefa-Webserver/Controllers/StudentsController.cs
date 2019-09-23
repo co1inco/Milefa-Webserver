@@ -72,10 +72,10 @@ namespace Milefa_WebServer.Controllers
                     date = date.AddHours(2);
                     date = date.Date;
 
-                    var test = await _context.Students.FirstAsync(i => i.ID == 19);
-                    Console.WriteLine(test.DateValide);
-                    Console.WriteLine(date);
-                    Console.WriteLine(date == test.DateValide);
+                    //var test = await _context.Students.FirstAsync(i => i.ID == 19);
+                    //Console.WriteLine(test.DateValide);
+                    //Console.WriteLine(date);
+                    //Console.WriteLine(date == test.DateValide);
 
                     //students = await _context.Students
                     //    .Include(i => i.DeployedDep)
